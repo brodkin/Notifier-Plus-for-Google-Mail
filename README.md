@@ -1,9 +1,11 @@
-= Mail Checker Minus =
+Mail Checker Minus
+==================
 The fast way to inbox zero, because that's a thing now.
 
 (This is a fork of Anders Sahlin's "Mail Checker Plus for Google Mail™")
 
-== Features ==
+Features:
+---------
 * Mail preview window, read mail without leaving the current tab
 * Delete, archive, spam, star and mark as read functionality
 * Desktop and sound notifications when new mail arrives
@@ -19,12 +21,14 @@ This extension requires elevated permissions because of the content script that 
 
 This extension is in no way affiliated with Google.
 
-== Copyright ==
+Copyright:
+----------
 * Copyright Andrew LeCody 2011
-* Original Copyright [mailto:malakeen@gmail.com Anders Sahlin] 2011
+* Original Copyright [Anders Sahlin](mailto:malakeen@gmail.com) 2011
 
-== License ==
-[http://www.gnu.org/licenses/gpl-3.0.html GPLv3]
+License:
+--------
+[GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

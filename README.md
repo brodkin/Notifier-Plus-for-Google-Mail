@@ -1,10 +1,10 @@
 Description
 ----
-Mail Checker Plus for Google Mail™ - The fast way to inbox zero!
-(The extension formerly known as Google Mail Checker Plus)
+Mail Checker Minus - The fast way to inbox zero!
+(This is a fork of Anders Sahlin's "Mail Checker Plus for Google Mail™")
 
 Features
------
+----
 * Mail preview window, read mail without leaving the current tab
 * Delete, archive, spam, star and mark as read functionality
 * Desktop and sound notifications when new mail arrives
@@ -13,19 +13,9 @@ Features
 * Monitor all your labels or priority inbox
 * Translated to over 60 languages!
 * More than 10 different icon sets, choose your favorite!
-* Help and support at official forum: [http://chrome.desc.se/forum/](http://chrome.desc.se/forum/)
 
-[http://chrome.desc.se](http://chrome.desc.se)
-
-[http://twitter.com/GMCPlus](http://twitter.com/GMCPlus)
-
-Hate the new design? Want the old version back? Look no further...
-Google Mail Checker Plus Classic:
-[https://chrome.google.com/extensions/detail/mcalakneigcblgalgpgbanhcmglpjjej](https://chrome.google.com/extensions/detail/mcalakneigcblgalgpgbanhcmglpjjej)
-
-Observe! This extension requires elevated permissions because of the content script that parses mailto-links. It does NOT in ANY WAY monitor private data in your browser!
-
-Like the extension? Contribute by donating, spreading the word or at least, rate it!
+This claim is currently being verified, but according to the original author:
+This extension requires elevated permissions because of the content script that parses mailto-links. It does NOT in ANY WAY monitor private data in your browser!
 _______________________________________________________
 This extension is in no way affiliated with Google.
 

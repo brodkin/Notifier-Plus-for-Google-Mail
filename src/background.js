@@ -1,6 +1,7 @@
 /// <reference path="chrome-api-vsdoc.js" />
 /// <reference path="jquery-1.4.2.js" />
 /// <reference path="mailaccount.class.js" />
+/// <reference path="settings.js" />
 
 var img_notLoggedInSrc = "not_logged_in";
 var img_noNewSrc = "no_new";
@@ -24,9 +25,14 @@ var animDelay = 10;
 
 var audioElement = new Audio();
 
+function getSettings() {
+   return Settings;
+}
+
+reloadSettings();
+
 function startAnimate() {
-   if (localStorage["gc_animate_off"] == null ||
-        localStorage["gc_animate_off"] == "false") {
+   if (Settings.read("animate_off") === false) {
       stopAnimateLoop();
       animTimer = setInterval("doAnimate()", animDelay);
       setTimeout("stopAnimate()", 2000);
@@ -37,12 +43,8 @@ function startAnimate() {
 function stopAnimate() {
    if (animTimer != null)
       clearTimeout(animTimer);
-
-   if (unreadCount > 0)
-      setIcon(img_newSrc);
-   else
-      setIcon(img_noNewSrc);
-
+      
+   setIcon(currentIcon);
    rotation = 1;
    factor = 1;
 }
@@ -56,19 +58,10 @@ function stopAnimateLoop() {
 
 function doAnimate() {
    canvasContext.save();
-   canvasContext.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height);
-   canvasContext.translate(
-        Math.ceil(canvas.width / 2),
-        Math.ceil(canvas.height / 2));
+   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+   canvasContext.translate(Math.ceil(canvas.width / 2), Math.ceil(canvas.height / 2));
    canvasContext.rotate(rotation * 2 * Math.PI);
-   canvasContext.drawImage(
-        gfx,
-        -Math.ceil(canvas.width / 2),
-        -Math.ceil(canvas.height / 2));
+   canvasContext.drawImage(gfx, -Math.ceil(canvas.width / 2), -Math.ceil(canvas.height / 2));
    canvasContext.restore();
 
    rotation += 0.01 * factor;
@@ -79,18 +72,15 @@ function doAnimate() {
       factor = -1;
 
    chrome.browserAction.setIcon({
-      imageData: canvasContext.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height)
+      imageData: canvasContext.getImageData(0, 0, canvas.width, canvas.height)
    });
 }
 
 chrome.extension.onRequest.addListener(
     function (request, sender, sendResponse) {
-       var openInTab = (localStorage["gc_open_tabs"] != null && localStorage["gc_open_tabs"] == "true");
-       var disableMailTo = (localStorage["gc_no_mailto"] != null && localStorage["gc_no_mailto"] == "true");
+       var openInTab = Settings.read("open_tabs");
+       var disableMailTo = Settings.read("no_mailto");
+
        if (request.getNewMail) {
           sendResponse({
              mailAccount: accountWithNewestMail,
@@ -98,8 +88,7 @@ chrome.extension.onRequest.addListener(
              mailURL: accountWithNewestMail.getURL(),
              profilePhotos: profilePhotos
           });
-       }
-       else if (request.command == "getURL"
+       } else if (request.command == "getURL"
             && !disableMailTo
             && accounts != null
             && accounts.length > 0) {
@@ -112,126 +101,105 @@ function init() {
    canvas = document.getElementById('canvas');
    canvasContext = canvas.getContext('2d');
    gfx = document.getElementById('gfx');
+}
 
-   reloadSettings();
+function showNotification(title, message, callback) {
+   localStorage.templateTitle = title;
+   localStorage.templateText = message;
+   window.templateCallback = callback;
+
+   var notification = webkitNotifications.createHTMLNotification(chrome.extension.getURL("template.html"));
+   notification.onclose = function () {
+      delete localStorage.templateTitle;
+      delete localStorage.templateText;
+      window.templateCallback = null;
+   };
+   notification.show();
 }
 
 function reloadSettings() {
-   unreadCount = 0;
-
-   if (localStorage["gc_poll"] == null)
-      localStorage["gc_poll"] = 15000;
-
-   if (localStorage["gc_dn_timeout"] == null)
-      localStorage["gc_dn_timeout"] = 15000;
-
-   if (localStorage["gc_sn_audio"] == null)
-      localStorage["gc_sn_audio"] = "chime.mp3";
-
-   if (localStorage["gc_open_label"] == null ||
-         localStorage["gc_check_label"] == null) {
-         // Backwards compatability with previous checkboxes
-         delete localStorage["gc_open_label"];   
-      if (localStorage["gc_check_all"] != null &&
-            localStorage["gc_check_all"] == "true") {
-         // Check all mail
-         localStorage["gc_check_label"] = "unread";
-         localStorage["gc_open_label"] = "#search/l:unread";
-         delete localStorage["gc_check_all"];
-      } else if (localStorage["gc_check_priority"] != null &&
-            localStorage["gc_check_priority"] == "true") {
-         // Check priority mail
-         localStorage["gc_check_label"] = "important";
-         localStorage["gc_open_label"] = "#mbox";
-         delete localStorage["gc_check_priority"];
-      } else {
-         // Default settings (inbox)
-         localStorage["gc_check_label"] = "";
-         localStorage["gc_open_label"] = "#inbox";
-      }
-   }
-
-   reloadLanguage();
-
-   iconSet = localStorage["gc_icon_set"];
-   if (iconSet == null || iconSet == "")
-      iconSet = localStorage["gc_icon_set"] = "set12";
 
    setIcon(img_notLoggedInSrc);
    chrome.browserAction.setBadgeBackgroundColor({ color: [190, 190, 190, 255] });
    chrome.browserAction.setBadgeText({ text: "?" });
    chrome.browserAction.setTitle({ title: "Loading settings..." });
 
-   if (localStorage["gc_preview_setting"] == null ||
-        localStorage["gc_preview_setting"] == "") {
-      localStorage["gc_preview_setting"] = "2";
-   }
+   Settings.load(function () {
+      unreadCount = 0;
+      reloadLanguage();
 
-   if (localStorage["gc_show_notification"] == null ||
-        localStorage["gc_show_notification"] == "") {
-      localStorage["gc_show_notification"] = "true";
-   }
+      iconSet = Settings.read("icon_set");
+      setIcon(img_notLoggedInSrc);
+      
+      var storedVersion = Settings.read("version");
+      if (storedVersion == null || storedVersion != VERSION) {
+         Settings.store("version", VERSION);
 
-   if (localStorage["gc_version"] == null ||
-        localStorage["gc_version"] != "1.2.2") {
-      localStorage["gc_version"] = "1.2.2";
-      chrome.tabs.create({ url: "about.html" });
-   }
+         var updateTitle = "New version installed";
+         var updateMessage = "The extension has been updated to the latest version (" + VERSION + ")." +
+         "<br />" + "<br />" +
+         "Click to view the change log.";
 
-   if (accounts != null) {
-      $.each(accounts, function (i, account) {
-         account.stopScheduler();
-         account = null;
-         delete account;
-      });
-   }
-   accounts = new Array();
-   profilePhotos = {};
+         showNotification(updateTitle, updateMessage, function () {
+            chrome.tabs.create({ url: "about.html" });
+         });
+      }
 
-   chrome.browserAction.setBadgeText({ text: "..." });
-   chrome.browserAction.setTitle({ title: "Polling accounts..." });
+      if (accounts != null) {
+         $.each(accounts, function (i, account) {
+            account.stopScheduler();
+            account = null;
+            delete account;
+         });
+      }
+      accounts = new Array();
+      profilePhotos = {};
 
-   if (localStorage["gc_check_gmail_off"] == null ||
-        localStorage["gc_check_gmail_off"] == "false") {
-      // Check if user has enabled multiple sessions
-      $.ajax({
-         url: "https://www.google.com/accounts/AddSession",
-         success: function (data) {
-            // Multiple accounts active
-            var matches = data.match(/([\S]+?@[\S]+)/ig);
-            console.log(matches);
+      chrome.browserAction.setBadgeText({ text: "..." });
+      chrome.browserAction.setTitle({ title: "Polling accounts..." });
 
-            if (matches != null && matches.length > 0) {
-               for (var n = 0; n < matches.length; n++) {
-                  var acc = new MailAccount({ accountNr: n });
+      if (Settings.read("check_gmail_off") === false) {
+         // Check if user has enabled multiple sessions
+         $.ajax({
+            url: "https://www.google.com/accounts/AddSession",
+            timeout: 10000,
+            success: function (data) {
+               // Multiple accounts active
+               var matches = data.match(/([\S]+?@[\S]+)/ig);
+               //console.log(matches);
+
+               if (matches != null && matches.length > 0) {
+                  for (var n = 0; n < matches.length; n++) {
+                     var acc = new MailAccount({ accountNr: n });
+                     acc.onError = mailError;
+                     acc.onUpdate = mailUpdate;
+                     accounts.push(acc);
+                  }
+               }
+
+               reloadSettings_complete();
+            },
+            error: function (objRequest) { },
+            complete: function () {
+               if (accounts.length == 0) {
+                  // No multiple accounts - just check default Gmail
+                  var acc = new MailAccount({});
                   acc.onError = mailError;
                   acc.onUpdate = mailUpdate;
                   accounts.push(acc);
+                  reloadSettings_complete();
                }
             }
-
-            reloadSettings_complete();
-         },
-         error: function (objRequest) { },
-         complete: function () {
-            if (accounts.length == 0) {
-               // No multiple accounts - just check default Gmail
-               var acc = new MailAccount({});
-               acc.onError = mailError;
-               acc.onUpdate = mailUpdate;
-               accounts.push(acc);
-               reloadSettings_complete();
-            }
-         }
-      });
-   } else {
-      reloadSettings_complete();
-   }
+         });
+      } else {
+         reloadSettings_complete();
+      }
+   });
 }
 
 function reloadSettings_complete() {
-   if (localStorage["gc_accounts"] != null) {
-      var savedAccounts = eval(localStorage["gc_accounts"]);
+   if (Settings.read("accounts") != null) {
+      var savedAccounts = Settings.read("accounts");
       $.each(savedAccounts, function (i, savedAccount) {
          if (savedAccount.domain == null)
             return;
@@ -252,12 +220,14 @@ function reloadSettings_complete() {
 }
 
 // Sets the browser action icon
+var currentIcon;
 function setIcon(iconName) {
-   var fullPath = "icons/" + iconSet + "/" + iconName + iconFormat;
+   currentIcon = iconName;
+   var iconPath = "icons/" + iconSet + "/" + iconName + iconFormat;
    try {
-      chrome.browserAction.setIcon({ path: fullPath });
+      chrome.browserAction.setIcon({ path: iconPath });
    } catch (e) {
-      console.error("Could not set browser action icon '" + fullPath + "'.");
+      console.error("Could not set browser action icon '" + currentIcon + "'.");
    }
 }
 
@@ -273,7 +243,7 @@ function startRequest() {
 // Called when an account has received a mail update
 function mailUpdate(_account) {
    stopAnimateLoop();
-   var hideCount = localStorage["gc_hide_count"];
+   var hideCount = Settings.read("hide_count");
 
    var newUnreadCount = 0;
    $.each(accounts, function (i, account) {
@@ -286,10 +256,11 @@ function mailUpdate(_account) {
       accountWithNewestMail = _account;
    }
 
-   if (hideCount == "true" || newUnreadCount < 1)
+   if (hideCount || newUnreadCount < 1) {
       chrome.browserAction.setBadgeText({ text: "" });
-   else
+   } else {
       chrome.browserAction.setBadgeText({ text: newUnreadCount.toString() });
+   }
 
    switch (newUnreadCount) {
       case 0:
@@ -309,13 +280,19 @@ function mailUpdate(_account) {
          break;
    }
 
-   if (newUnreadCount > unreadCount) {
-      setTimeout('playSound()', 0);
-      setTimeout('startAnimate()', 0);
-      if (accountWithNewestMail != null) {
+   if (newUnreadCount > unreadCount && accountWithNewestMail != null) {
+      var newestMail = accountWithNewestMail.getNewestMail();
+      var mailIdHash = $.md5(newestMail.id);
+      var addressHash = $.md5(accountWithNewestMail.getAddress());
+
+      if (mailIdHash != localStorage[addressHash + "_newest"]) {
+         setTimeout('playSound()', 0);
+         setTimeout('startAnimate()', 0);
          setTimeout('notify(accountWithNewestMail)', 0);
+         localStorage[addressHash + "_newest"] = mailIdHash;
       }
    }
+
    unreadCount = newUnreadCount;
 }
 
@@ -330,13 +307,13 @@ function mailError(_account) {
 
 // Plays a ping sound
 function playSound() {
-   if (localStorage["gc_sound_off"] != null && localStorage["gc_sound_off"] == "true")
+   if (Settings.read("sound_off"))
       return;
 
-   var source = localStorage["gc_sn_audio"];
+   var source = Settings.read("sn_audio");
 
    if (source == "custom") {
-      source = localStorage["gc_sn_audio_raw"];
+      source = Settings.read("sn_audio_raw");
    }
 
    try {
@@ -350,11 +327,11 @@ function playSound() {
 
 // Displays a notification popup
 function notify(accountWithNewestMail) {
-   if (localStorage["gc_show_notification"] != null && localStorage["gc_show_notification"] == "true") {
+   if (Settings.read("show_notification")) {
       try {
          var notification = webkitNotifications.createHTMLNotification(chrome.extension.getURL("notify.html"));
 
-         var timeout = localStorage["gc_dn_timeout"];
+         var timeout = Settings.read("dn_timeout");
 
          notification.show();
 
@@ -368,23 +345,4 @@ function notify(accountWithNewestMail) {
          console.error(e);
       }
    }
-}
-
-function getLabels(mailURL, callback) {
-   var getURL = mailURL + "h/" + Math.ceil(1000000 * Math.random()) + "/?v=prl";
-   $.ajax({
-      url: getURL,
-      success: function (data) {
-         var labelArray = new Array();
-         var labelPage = $(data);
-         var labels = $("div.prf > table > tbody > tr > td > b > a", labelPage);
-         labels.each(function (i) {
-            labelArray.push($(this)[0].innerText);
-         });
-
-         if (callback != null) {
-            setTimeout(callback(labelArray), 0);
-         }
-      }
-   });
 }

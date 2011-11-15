@@ -1,9 +1,11 @@
 ﻿<!DOCTYPE html>
+
+<html>
 <head>
 	<title>About Mail Checker Plus for Google Mail™</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="general.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/general.css" />
 </head>
 <body>
 
@@ -12,7 +14,7 @@
     <table>
         <tr>
             <td>
-                <span class="top_right"><img src="img/icon_48.png"></span>
+                <span class="top_right"><img src="img/icon_48.png" alt="Icon" /></span>
                 <h1>Thank you...</h1>
                 <p>... for installing (or updating to) the latest version of <strong>Mail Checker Plus for Google Mail™</strong>!</p>
                 <p>Make sure you check the <a href="options.html" title="Go to the options page"><strong>options page</strong></a> for visual and functional configuration of the extension.</p>
@@ -30,29 +32,47 @@
         </tr>
         <tr>
             <td>
-                <h2>Changelog</h2>
-                <h4>1.2.3.6 (2011-09-18)</h4>
+                <h2>Changelog</h2>                
+                <h4> 1.2.4.8 (2011-09-25)</h4>
                 <ul>     
-                    <li>Fixed a bug causing label-monitoring options to revert</li>
-                </ul>
-                <h4>1.2.3.5 (2011-09-16)</h4>
-                <ul>     
-                    <li>Fixed multiple account discovery for the new Gmail log-in page</li>
-                </ul>
-                <h4>1.2.3.4 (2011-08-23)</h4>
-                <ul>     
-                    <li>Fixed a bug causing the action buttons to malfunction</li>
-                </ul>
-                <h4>1.2.3.3 (2011-03-21)</h4>
-                <ul>     
-                    <li>Added a separate option for which label to monitor</li>
-                    <li>Added a separate option for which label to open</li>
-                    <li>Fixed an issue with the "Refresh"-button not actually refreshing anything</li>
-                </ul>
-                <h4>1.2.3.2 (2011-03-20)</h4>
+                    <li>Fixed multiple account discovery</li>
+                </ul>  
+                <h4> 1.2.4.7 (2011-08-23)</h4>
                 <ul>     
                     <li>Mailto-links will now be parsed on HTTPS sites as well</li>
                 </ul>
+                    <li>Fixed a bug causing the action buttons to malfunction</li>
+                </ul>                  
+                <h4> 1.2.4.6 (2011-06-14)</h4>
+                <ul>     
+                    <li>Fixed an issue with GAFYD account management on the options page (they can now be deleted properly again)</li>
+                </ul>    
+                <h4> 1.2.4.5 (2011-04-30)</h4>
+                <ul>     
+                    <li>Fixed an issue with browser action icon rendering and animation</li>
+                </ul>       
+                <h4> 1.2.4.4 (2011-04-26)</h4>
+                <ul>     
+                    <li>Added a loading animation on the popup page when the extension is waiting for an outgoing request</li>
+                    <li>Client storage backend rewritten (bye LocalStorage, hello <a href="https://developer.mozilla.org/en/IndexedDB">IndexedDB</a>). <br />You will have to re-enter any custom settings, <strong>sorry</strong>!</li>
+                    <li>New icon set, OSX (thanks to Marijn van der Werf)</li>
+                </ul>  
+                <h4> 1.2.4.2 (2011-04-21)</h4>
+                <ul>     
+                    <li>Added experimental one-way label support</li>
+                </ul>  
+                <h4> 1.2.4.1 (2011-04-16)</h4>
+                <ul>     
+                    <!--<li>The account with the most recent unread item will now always be on top</li>-->
+                    <li>Using actions in the preview window will show the next (or previous) unread mail instead of returning to compact mode</li>
+                    <li>Update alerts regarding the extension will be displayed in a notification instead of in a new tab</li>
+                </ul>           
+                <h4> 1.2.4.0 (2011-04-14)</h4>
+                <ul>     
+                    <li>Added previous- and next-links in expanded preview window to easily navigate between unread mail</li>
+                </ul>
+                <br />
+                <a href="http://chrome.desc.se/" title="Go to the home page to see a complete changelog">Go to the home page to see a complete changelog</a>
             </td>
         </tr>
         <tr>
@@ -62,7 +82,6 @@
         </tr>
     </table>
     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=10581461" title="Donate via PayPal" target="_blank" style="border: 0"><img src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" alt="PayPal - The safer, easier way to pay online!"></a>
-    </form>
 </div>
 </body>
 </html>

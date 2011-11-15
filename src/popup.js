@@ -1,28 +1,49 @@
 /// <reference path="jquery-1.4.2.js" />
 /// <reference path="chrome-api-vsdoc.js" />
 /// <reference path="encoder.js" />
+/// <reference path="settings.js" />
+/// <reference path="mailaccount.class.js" />
 
 var backgroundPage = chrome.extension.getBackgroundPage();
+var Settings = backgroundPage.getSettings();
 var mailAccounts = backgroundPage.accounts;
+
 //var mailArray = mailAccount.getMail();
 var mailCount = 0;
 var mailCache = new Array();
-var allMail;
+var allMailMap;
+var allMailArray;
 var scrollbar;
-
 var unreadCount = 0;
-allMail = new Array();
+
 $.each(mailAccounts, function (i, account) {
    unreadCount += account.getUnreadCount();
 });
 
-var previewSetting = localStorage["gc_preview_setting"];
+//// Sort new mail by date
+//mailAccounts.sort(function (a, b) {
+//   var aNewest = a.getNewestMail();
+//   var bNewest = b.getNewestMail();
 
-if (previewSetting == "0") {
+//   if(bNewest == null)
+//      return -1;
+//   if(aNewest == null)
+//      return 1;
+
+//   if (aNewest.issued > bNewest.issued)
+//      return -1;
+//   if (bNewest.issued > aNewest.issued)
+//      return 1;
+//   return 0;
+//});
+
+var previewSetting = Settings.read("preview_setting");
+
+if (previewSetting === 0) {
    // Preview setting set to "Always off" =
    // Go to first mail inbox with unread items
    openInbox(0);
-} else if (previewSetting == "1" && unreadCount == 0) {
+} else if (previewSetting === 1 && unreadCount === 0) {
    // Preview setting set to "Automatic" + no unread mail =
    // Go to first mail inbox
    openInbox(0);
@@ -86,9 +107,17 @@ function sendPage(accountId) {
    });
 }
 
+function showLoading(mailid) {
+   $("#loadingBox_" + mailid).fadeIn(100);
+}
+
+function hideLoading(mailid) {
+   $("#loadingBox_" + mailid).hide();
+}
+
 function readThread(accountId, mailid, stayOpen) {
-   hideMail(accountId, mailid, stayOpen);
-   mailAccounts[accountId].readThread(mailid);
+   showLoading(mailid);
+   mailAccounts[accountId].readThread(mailid, function() { hideMail(accountId, mailid, stayOpen); });
 }
 
 function unreadThread(accountId, mailid) {
@@ -105,26 +134,30 @@ function unreadThread(accountId, mailid) {
 }
 
 function archiveThread(accountId, mailid) {
-   hideMail(accountId, mailid);
-   mailAccounts[accountId].archiveThread(mailid);
+   showLoading(mailid);
+   mailAccounts[accountId].archiveThread(mailid, function() { hideMail(accountId, mailid); });
 }
 
 function deleteThread(accountId, mailid) {
-   hideMail(accountId, mailid);
-   mailAccounts[accountId].deleteThread(mailid);
+   showLoading(mailid);
+   mailAccounts[accountId].deleteThread(mailid, function() { hideMail(accountId, mailid); });
 }
 
 function spamThread(accountId, mailid) {
-   hideMail(accountId, mailid);
-   mailAccounts[accountId].spamThread(mailid);
+   showLoading(mailid);
+   mailAccounts[accountId].spamThread(mailid, function() { hideMail(accountId, mailid); });
 }
 
 function starThread(accountId, mailid) {
    mailAccounts[accountId].starThread(mailid);
 }
 
+function applyLabelToThread(accountId, mailId, label) {
+   mailAccounts[accountId].applyLabel(mailId, label);
+}
+
 function replyTo(accountId, mailid) {
-   mailAccounts[accountId].replyTo(allMail[mailid]);
+   mailAccounts[accountId].replyTo(allMailMap[mailid]);
 }
 
 function showReply(mailid) {
@@ -146,8 +179,7 @@ function sendReply(mailid) {
 
 function getThread(accountId, mailid) {
 
-   var markAsRead = (localStorage["gc_showfull_read"] != null && localStorage["gc_showfull_read"] == "true");
-   if (markAsRead) {
+   if (Settings.read("showfull_read")) {
 	  readThread(accountId, mailid, true);
    }
 
@@ -158,49 +190,70 @@ function getThread(accountId, mailid) {
    }
 
    if (accountId != null) {
-      window.setTimeout(mailAccounts[accountId].getThread(accountId, mailid, showBody), 0);
-      //		
-      //		var mailElement = document.getElementById(mailid);
-      //		if(mailElement != null) {
-      //			var mailHeaderReadLink = document.getElementById(mailid + "_read-link");
-      //			if(mailHeaderReadLink != null) {
-      //				mailHeaderReadLink.href = "javascript:unreadThread('" + accountId + "', '" + mailid + "');";
-      //				mailHeaderReadLink.innerHTML = i18n.get('unreadLink');
-      //				mailHeaderReadLink.title = i18n.get('unreadLinkTitle');
-      //			}
-      //		}    
+      showLoading(mailid);
+      mailAccounts[accountId].getThread(accountId, mailid, showBody);  
    }
 }
 
 function showBody(accountid, mailid, mailbody) {
+   hideLoading(mailid);
    //   showElement(mailid + "_less-link");
    //   hideElement(mailid + "_more-link");
 
    if (mailbody != null) {
-      var mail = allMail[mailid];
+
+      var previousMail = null;
+      var nextMail = null;
+      var currentMail = allMailMap[mailid];
+      var currentMailIndex = 0;
+      
+      $.each(allMailArray, function(index, _mail) {
+         if(_mail.id === mailid) {
+            currentMailIndex = index + 1;
+            if(index > 0) {
+               previousMail = allMailArray[index - 1];
+            }
+            if(index + 1 < allMailArray.length) {
+               nextMail = allMailArray[index + 1];
+            }
+            // Break loop
+            return false;
+         }
+      });
+
+      var nextPreviousOrHide = function() {
+         if(nextMail) {            
+            getThread(nextMail.accountId, nextMail.id);
+         } else if(previousMail) {         
+            getThread(previousMail.accountId, previousMail.id);
+         } else {
+            hideBody();
+         }
+      }
 
       var fullscreenContainer = $("#fullscreenContainer");
       var fullscreenContent = $("#fullscreenContent");
       var fullscreenControl = $("#fullscreenControls");
 
-
-      fullscreenControl.find('.openLink').html(mail.shortTitle);
-      fullscreenControl.find('.openLink').attr('title', Encoder.htmlDecode(mail.title));
-      fullscreenControl.find('.authorLink').html(mail.authorName);
-      fullscreenControl.find('.authorLink').attr('title', Encoder.htmlDecode(mail.authorMail));
-      fullscreenControl.find('.issuedLink').html(formatDateTime(mail.issued, i18n.selected_lang.months, true));
-      fullscreenControl.find('.issuedLink').attr('title', mail.issued);
+      fullscreenControl.find('.openLink').html(currentMail.shortTitle);
+      fullscreenControl.find('.openLink').attr('title', Encoder.htmlDecode(currentMail.title));
+      fullscreenControl.find('.authorLink').html(currentMail.authorName);
+      fullscreenControl.find('.authorLink').attr('title', Encoder.htmlDecode(currentMail.authorMail));
+      fullscreenControl.find('.issuedLink').html(formatDateTime(currentMail.issued, i18n.selected_lang.months, true));
+      fullscreenControl.find('.issuedLink').attr('title', currentMail.issued);
 
       fullscreenControl.find('.readLink').text(i18n.get('readLink'));
       fullscreenControl.find('.deleteLink').text(i18n.get('deleteLink'));
       fullscreenControl.find('.spamLink').text(i18n.get('spamLink'));
       fullscreenControl.find('.archiveLink').text(i18n.get('archiveLink'));
+      fullscreenControl.find('.countLabel').text(currentMailIndex + ' of ' + allMailArray.length);
       fullscreenControl.find('.starLink').attr('title', i18n.get('starLinkTitle'));
       fullscreenControl.find('.replyLink').attr('title', i18n.get('replyLinkTitle'));
       fullscreenControl.find('.readLink').attr('title', i18n.get('readLinkTitle'));
       fullscreenControl.find('.deleteLink').attr('title', i18n.get('deleteLinkTitle'));
       fullscreenControl.find('.spamLink').attr('title', i18n.get('spamLinkTitle'));
       fullscreenControl.find('.archiveLink').attr('title', i18n.get('archiveLinkTitle'));
+
 
       // Insert the full mail body and full screen controls
       fullscreenContent.empty();
@@ -211,33 +264,58 @@ function showBody(accountid, mailid, mailbody) {
       fullscreenContainer.append(fullscreenContent);
 
       // Set event handlers
+
+      if(previousMail) {
+         fullscreenControl.find('.previousLink').css('visibility','visible');
+         fullscreenControl.find('.previousLink').click(function () {
+            getThread(previousMail.accountId, previousMail.id);
+         });
+      } else {
+         fullscreenControl.find('.previousLink').css('visibility','hidden');
+      }
+
+      if(nextMail) {
+         fullscreenControl.find('.nextLink').css('visibility','visible');
+         fullscreenControl.find('.nextLink').click(function () {
+            getThread(nextMail.accountId, nextMail.id);
+         });
+      } else {
+         fullscreenControl.find('.nextLink').css('visibility','hidden');
+      }
+
       fullscreenControl.find('.closeLink').click(function () {
-         setTimeout(hideBody(), 0);
+         window.close();
       });
+      fullscreenControl.find('.hideLink').click(function () {
+         hideBody();
+      });
+
       fullscreenControl.find('.readLink').click(function () {
          readThread(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         nextPreviousOrHide();
       });
       fullscreenControl.find('.replyLink').click(function () {
          replyTo(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         nextPreviousOrHide();
       });
       fullscreenControl.find('.deleteLink').click(function () {
          deleteThread(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         nextPreviousOrHide();
       });
       fullscreenControl.find('.spamLink').click(function () {
          spamThread(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         nextPreviousOrHide();
       });
       fullscreenControl.find('.archiveLink').click(function () {
          archiveThread(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         nextPreviousOrHide();
       });
+
       fullscreenControl.find('.openLink').click(function () {
          openMail(accountid, mailid);
-         setTimeout(hideBody(), 0);
+         hideBody();
       });
+
       fullscreenControl.find('.starLink').click(function () {
          $(this).css('opacity', '1');
          starThread(accountid, mailid);
@@ -276,7 +354,18 @@ function hideMail(accountId, mailid, stayOpen) {
 //   $('#' + mailid).removeClass('mail');
    $('#' + mailid).remove();
 
-   var unreadCount = accountElement.find('.mail').length;
+   delete allMailMap[mailid];
+   //var allMailArray = window.allMailArray;
+
+   $.each(allMailArray, function(_index, _mail) {
+      if(_mail.id === mailid) {
+         delete allMailArray[_index];
+         allMailArray.splice(_index,1);
+         return false;
+      }
+   });
+
+   var unreadCount = allMailArray.length;
 
    if (unreadCount == 0) {
       accountElement.find('.toggleLink').hide('fast');
@@ -383,18 +472,24 @@ function renderAccount(account) {
 
    // Add to page
    $(accountHtml).fadeIn("fast").appendTo("#content");
+
    var inboxElement = $('#inbox_' + account.id);
+   var labels = account.getLabels();
 
    if (account.getMail() != null) {
       $.each(account.getMail(), function (j, mail) {
-         allMail[mail.id] = mail;
+
+         mail.accountId = account.id;
+
+         allMailMap[mail.id] = mail;
+         allMailArray.push(mail);
             
          // Render mail
          var mailHtml = parseTemplate($("#MailTemplate").html(), {
             account: account,
             mail: mail,
             i18n: i18n
-         });
+         });         
 
          // Add to account element
          $(mailHtml).fadeIn("fast").appendTo(inboxElement);
@@ -414,6 +509,49 @@ function renderAccount(account) {
       });
    }
 
+//   if(account.getLabels() != null) {
+//      var labels = account.getLabels();
+//      var labelPopout = $('#labels_' + account.id);
+
+//      $.each(labels, function(_index, _label) {
+//         var labelElement = $('<li>');
+
+//         labelElement.text(_label);
+//         labelElement.click(function() {
+//            //alert(_label);
+//         });
+
+//         labelElement.appendTo(labelPopout);
+//      });
+//   }
+
+   $.each(inboxElement.find(".mailLabels"), function(_index, _mailLabels) {
+      var labelContainer = $(_mailLabels);
+      var mailId = labelContainer.attr('mailId');
+
+      if(labels != null) {
+         var labelPopout = $('<ul>');
+         labelPopout.addClass('labels');
+
+         $.each(labels, function(_index, _label) {
+            var labelElement = $('<li>');
+
+            labelElement.text(_label);
+            labelElement.attr("title", "Apply label '" + _label + "'");
+
+            labelElement.click(function() {
+               $(this).toggleClass("applied");               
+               labelContainer.slideUp(100);
+               applyLabelToThread(account.id, mailId, _label);
+            });
+
+            labelElement.appendTo(labelPopout);
+         });
+
+         labelPopout.appendTo(labelContainer);
+      }
+   });
+
    // Hook up event handlers
    inboxElement.find(".readLink").click(function () { readThread(account.id, $(this).attr('mailId')); });
    inboxElement.find(".deleteLink").click(function () { deleteThread(account.id, $(this).attr('mailId')); });
@@ -423,6 +561,12 @@ function renderAccount(account) {
    inboxElement.find(".summary").click(function () { getThread(account.id, $(this).attr('mailId')); });
    inboxElement.find(".replyLink").click(function () { replyTo(account.id, $(this).attr('mailId')); });
    inboxElement.find(".openLink").click(function () { openMail(account.id, $(this).attr('mailId')); });
+
+   
+   inboxElement.find(".labelLink").click(function () { 
+      var mailId = $(this).attr('mailId');
+      $("#labelBox_" + mailId).slideToggle(100);
+   });
       
    inboxElement.find(".starLink").click(function () {
       $(this).css('opacity', '1');
@@ -432,7 +576,9 @@ function renderAccount(account) {
 
 $(document).ready(function () {
    var unreadCount = 0;
-   allMail = new Array();
+   allMailMap = {};
+   allMailArray = new Array();
+
    $.each(mailAccounts, function (i, account) {
       unreadCount += account.getUnreadCount();
    });

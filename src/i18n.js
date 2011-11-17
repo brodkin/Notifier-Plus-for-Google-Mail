@@ -235,7 +235,8 @@ languages["en"] = {
     "noUnreadText" : "No unread mail",
     "oneUnreadText" : "unread mail", // One unread item: "1 unread mail"
     "severalUnreadText" : "unread mail", // Several unread items: "3 unread mail"
-    "popupText" : "You have received new mail!"
+    "popupText" : "You have received new mail!",
+    "showLabelsTitle" : "Show Labels"
 };
 
 // Esperanto

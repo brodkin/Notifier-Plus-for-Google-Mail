@@ -1,9 +1,3 @@
-/// <reference path="chrome-api-vsdoc.js" />
-/// <reference path="jquery-1.4.2.js" />
-/// <reference path="mailaccount.class.js" />
-/// <reference path="utility.js" />
-/// <reference path="settings.js" />
-
 var backgroundPage = chrome.extension.getBackgroundPage();
 var Settings = backgroundPage.getSettings();
 

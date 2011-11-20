@@ -1,8 +1,3 @@
-/// <reference path="chrome-api-vsdoc.js" />
-/// <reference path="jquery-1.4.2.js" />
-/// <reference path="mailaccount.class.js" />
-/// <reference path="settings.js" />
-
 var img_notLoggedInSrc = "not_logged_in";
 var img_noNewSrc = "no_new";
 var img_newSrc = "new";
@@ -124,77 +119,75 @@ function reloadSettings() {
    chrome.browserAction.setBadgeText({ text: "?" });
    chrome.browserAction.setTitle({ title: "Loading settings..." });
 
-   Settings.load(function () {
-      unreadCount = 0;
-      reloadLanguage();
+   unreadCount = 0;
+   reloadLanguage();
 
-      iconSet = Settings.read("icon_set");
-      setIcon(img_notLoggedInSrc);
-      
-      var storedVersion = Settings.read("version");
-      if (storedVersion == null || storedVersion != VERSION) {
-         Settings.store("version", VERSION);
+   iconSet = Settings.read("icon_set");
+   setIcon(img_notLoggedInSrc);
+   
+   var storedVersion = Settings.read("version");
+   if (storedVersion == null || storedVersion != VERSION) {
+      Settings.store("version", VERSION);
 
-         var updateTitle = "New version installed";
-         var updateMessage = "The extension has been updated to the latest version (" + VERSION + ")." +
-         "<br />" + "<br />" +
-         "Click to view the change log.";
+      var updateTitle = "New version installed";
+      var updateMessage = "The extension has been updated to the latest version (" + VERSION + ")." +
+      "<br />" + "<br />" +
+      "Click to view the change log.";
 
-         showNotification(updateTitle, updateMessage, function () {
-            chrome.tabs.create({ url: "about.html" });
-         });
-      }
+      showNotification(updateTitle, updateMessage, function () {
+         chrome.tabs.create({ url: "about.html" });
+      });
+   }
 
-      if (accounts != null) {
-         $.each(accounts, function (i, account) {
-            account.stopScheduler();
-            account = null;
-            delete account;
-         });
-      }
-      accounts = new Array();
-      profilePhotos = {};
+   if (accounts != null) {
+      $.each(accounts, function (i, account) {
+         account.stopScheduler();
+         account = null;
+         delete account;
+      });
+   }
+   accounts = new Array();
+   profilePhotos = {};
 
-      chrome.browserAction.setBadgeText({ text: "..." });
-      chrome.browserAction.setTitle({ title: "Polling accounts..." });
+   chrome.browserAction.setBadgeText({ text: "..." });
+   chrome.browserAction.setTitle({ title: "Polling accounts..." });
 
-      if (Settings.read("check_gmail_off") === false) {
-         // Check if user has enabled multiple sessions
-         $.ajax({
-            url: "https://www.google.com/accounts/AddSession",
-            timeout: 10000,
-            success: function (data) {
-               // Multiple accounts active
-               var matches = data.match(/([\S]+?@[\S]+)/ig);
-               //console.log(matches);
+   if (Settings.read("check_gmail_off") === false) {
+      // Check if user has enabled multiple sessions
+      $.ajax({
+         url: "https://www.google.com/accounts/AddSession",
+         timeout: 10000,
+         success: function (data) {
+            // Multiple accounts active
+            var matches = data.match(/([\S]+?@[\S]+)/ig);
+            //console.log(matches);
 
-               if (matches != null && matches.length > 0) {
-                  for (var n = 0; n < matches.length; n++) {
-                     var acc = new MailAccount({ accountNr: n });
-                     acc.onError = mailError;
-                     acc.onUpdate = mailUpdate;
-                     accounts.push(acc);
-                  }
-               }
-
-               reloadSettings_complete();
-            },
-            error: function (objRequest) { },
-            complete: function () {
-               if (accounts.length == 0) {
-                  // No multiple accounts - just check default Gmail
-                  var acc = new MailAccount({});
+            if (matches != null && matches.length > 0) {
+               for (var n = 0; n < matches.length; n++) {
+                  var acc = new MailAccount({ accountNr: n });
                   acc.onError = mailError;
                   acc.onUpdate = mailUpdate;
                   accounts.push(acc);
-                  reloadSettings_complete();
                }
             }
-         });
-      } else {
-         reloadSettings_complete();
-      }
-   });
+
+            reloadSettings_complete();
+         },
+         error: function (objRequest) { },
+         complete: function () {
+            if (accounts.length == 0) {
+               // No multiple accounts - just check default Gmail
+               var acc = new MailAccount({});
+               acc.onError = mailError;
+               acc.onUpdate = mailUpdate;
+               accounts.push(acc);
+               reloadSettings_complete();
+            }
+         }
+      });
+   } else {
+      //reloadSettings_complete();
+   }
 }
 
 function reloadSettings_complete() {

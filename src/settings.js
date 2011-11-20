@@ -1,10 +1,6 @@
-﻿/// <reference path="DB.js" />
+﻿var Settings = function() {
 
-var Settings = function() {
-
-   var cache = {};
-   var storeId = "settings";
-   var prefix = "gc_";
+   var prefix = 'mailchecker_';
 
    var defaults = {
       "poll": 15000,
@@ -27,34 +23,31 @@ var Settings = function() {
       "archive_read": true,
    };
 
-   function loadFromDB(_settingsLoaded) {
-      wrappedDB.readAllObjects(storeId,
-      function (setting) {
-         cache[setting.key] = setting.value;
-      }, _settingsLoaded);
-   }
-
    Settings.read = function (key) {
-      if (cache[key] != null) {
-         return cache[key];
-      }
 
-      // Key not found, store default value
-      if (defaults[key] != null) {
-         this.store(key, defaults[key]);
-         return defaults[key];
+      var value = localStorage.getItem(prefix + key);
+
+      if (value != null) {
+         //console.log('Read: ' + key + '=' + value);
+         // Return value
+         if (value == 'true') return true;
+         else if (value == 'false') return false;
+         else return value;
+      } else {
+         // Key not found, store default value
+         if (defaults[key] != null) {
+            //console.log('Default: ' + key + '=' + defaults[key]);
+            this.store(key, defaults[key]);
+            return defaults[key];
+         }
       }
 
       return null;
    };
 
    Settings.store = function (key, value) {
-      cache[key] = value;
-      wrappedDB.putObject(storeId, key, value);
-   };
-
-   Settings.load = function (settingsLoaded) {
-      wrappedDB.open(DBNAME, storeId, function () { loadFromDB(settingsLoaded); });
+      localStorage.setItem(prefix + key, value);
+      console.log('Stored: ' + key + '=' + value);
    };
 }
 

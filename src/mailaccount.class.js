@@ -1,13 +1,7 @@
-/// <reference path="chrome-api-vsdoc.js" />
-/// <reference path="jquery-1.4.2.js" />
-/// <reference path="encoder.js" />
-
 /* 
 *********************************
 MailAccount class
 by Anders Sahlin a.k.a. destructoBOT (malakeen@gmail.com)
-for Mail Checker Plus for Google Mail�
-https://chrome.google.com/extensions/detail/gffjhibehnempbkeheiccaincokdjbfe
 *********************************
 */
 

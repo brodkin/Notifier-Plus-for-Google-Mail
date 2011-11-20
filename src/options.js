@@ -5,14 +5,17 @@ $(restore_options);
 
 var boolIdArray = new Array("hide_count",
                             "showfull_read",
-                            "check_gmail_off",
                             "open_tabs",
                             "archive_read",
                             "no_mailto",
                             "sound_off",
                             "animate_off", 
                             "show_notification");
-var accounts;
+
+function reset_options() {
+    Settings.reset();
+    backgroundPage.reloadSettings();
+}
 
 function save_options() {
    for (var i in boolIdArray) {
@@ -45,8 +48,6 @@ function save_options() {
    Settings.store("language", document.getElementById("languages").value);
    Settings.store("check_label", document.getElementById("check_label").value);
    Settings.store("open_label", document.getElementById("open_label").value);
-
-   Settings.store("accounts", accounts);
 
    Settings.store("sn_audio", document.getElementById("sn_audio").value);
    if (Settings.read("sn_audio") == "custom") {
@@ -119,24 +120,12 @@ function restore_options() {
    document.getElementById("check_label_" + Settings.read("check_label")).selected = true;
    document.getElementById("open_label_" + Settings.read("open_label")).selected = true;
 
-   accounts = Settings.read("accounts");
-   if (accounts == null) {
-      accounts = new Array();
-   }
-
    var langSel = document.getElementById("languages");
    for (var i in languages) {
       langSel.add(new Option(languages[i].what, languages[i].id), languages[i].id);
    }
    langSel.value = Settings.read("language");
    sortlist(langSel);
-
-   var acc_sel = document.getElementById("accounts");
-   for (var i in accounts) {
-      if (accounts[i] == null || accounts[i].domain == null)
-         break;
-      acc_sel.add(new Option(accounts[i].domain), null);
-   }
 
    $('#sn_audio').val(Settings.read("sn_audio"));
    $('#sn_audio_enc').val(Settings.read("sn_audio_raw"));
@@ -180,41 +169,6 @@ function showContent(contentId) {
 function spawnIconRow(value, description) {
     var selectionElement = document.getElementById("icon_selection");
     selectionElement.innerHTML += '<span><input type="radio" name="icon_set" value="' + value + '" id="icon_set' + value + '" /><label for="icon_set' + value + '"><img src="icons/' + value + '/not_logged_in.png" /><img src="icons/' + value + '/no_new.png" /><img src="icons/' + value + '/new.png" /> <small>' + description + '</small></span></label><br />';
-}
-
-function add_account() {
-    var newacc_domain = prompt("Enter the domain name for your GAFYD account." +
-        "\n\nDo not enter anything but the domain name!" +
-        "\n\nIf your mail adress is <yourname@yourdomain.com>, simply enter \"yourdomain.com\""
-        , "yourdomain.com");
-
-    if (newacc_domain != null && newacc_domain != "" && newacc_domain != "yourdomain.com") {
-        document.getElementById("check_gmail_off").checked = "true";
-        accounts.push({ "domain": newacc_domain });
-
-        var acc_sel = document.getElementById("accounts");
-        acc_sel.add(new Option(newacc_domain), null);
-        //acc_sel.size = accounts.length + 1;        
-    }
-}
-
-function remove_account() {
-    var acc_sel = document.getElementById("accounts");
-    var acc_todel;
-
-    if (acc_sel.selectedIndex > -1 && acc_sel.options[acc_sel.selectedIndex] != null) {
-        acc_todel = acc_sel.options[acc_sel.selectedIndex];
-
-        for (var i in accounts) {
-            if (accounts[i].domain == acc_todel.text) {
-                console.log("removing account: " + accounts[i].domain);
-                accounts.splice(i, 1);
-                break;
-            }
-        }
-        acc_sel.remove(acc_sel.selectedIndex);
-        //acc_sel.size = accounts.length + 1;
-    }
 }
 
 function add_label() {

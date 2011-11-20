@@ -23,6 +23,11 @@
       "archive_read": true,
    };
 
+   Settings.reset = function () {
+      localStorage.clear();
+      console.log('Cleared local storage.');
+   };
+
    Settings.read = function (key) {
 
       var value = localStorage.getItem(prefix + key);

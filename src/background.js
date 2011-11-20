@@ -186,7 +186,7 @@ function reloadSettings() {
          }
       });
    } else {
-      //reloadSettings_complete();
+      reloadSettings_complete();
    }
 }
 

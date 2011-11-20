@@ -8,7 +8,6 @@
 
 		<script src="src/global.js"></script>
 		<script src="src/jquery-1.7.min.js"></script>
-		<script src="src/DB.js"></script>
 		<script src="src/settings.js"></script>
 		<script src="src/i18n.js"></script>
 		<script src="src/mailaccount.class.js"></script>
@@ -87,13 +86,6 @@
 			   </div>
 			   <div id="content_2" class="content invisible">
 				   <h2>Account settings</h2>
-				   <p>
-					   <select id="accounts"></select><br />
-					   <a href="javascript:add_account()" title="Add a new account">Add</a> | <a href="javascript:remove_account()" title="Remove selected account">Remove</a>
-				   </p>	
-               <input type="checkbox" id="check_gmail_off" /> <label for="check_gmail_off">Turn off regular Gmail checking</label> <a title="Enable this setting if you don't have an account at gmail.com" style="cursor: help">?</a>
-               <br />
-               <br />
 				   Polling interval:  
 				   <select id="poll">
 				       <option id="poll_15000" value="15000">15 seconds</option>
@@ -164,7 +156,8 @@
        </table>
        <span class="left">
        </span>
-       <button id="submit" onclick="save_options()" style="width: 130px;height: 30px; float: right; margin-top: 4px;">Save &amp; Reload</button>
+       <button id="submit" type="submit" onclick="save_options()" style="width: 130px;height: 30px; float: right; margin-top: 4px;">Save &amp; Reload</button>
+       <button id="submit" type="submit" onclick="reset_options()" style="width: 130px;height: 30px; float: right; margin-top: 4px; margin-right:5px;">Reset to Defaults</button>
        </form>
    </div>
    </body>

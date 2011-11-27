@@ -122,6 +122,7 @@ section#titleBlock #title img
 section#titleBlock div#menu
 {
    float: right;
+	padding-right: 10px;
 }
 
 section#titleBlock div#menu a {
@@ -465,25 +466,25 @@ ul.labels li:hover
 /* Star Icons */
 
 .sprite.star {
-	background-image: url(../img/sprite_stars.png);
+	background: url(../img/sprite_stars.png) -2px 0;
 }
 
 .sprite.star:hover {
-	background-position: -20px 0;
+	background-position: -22px 0;
 }
 
 .sprite.star.active, .sprite.star.active:hover {
-	background-position: -40px 0;
+	background-position: -42px 0;
 }
 
 /* Importance Icons */
 
 .sprite.importance {
-	background: url(../img/sprite_importance.png) 0 -1px;
+	background: url(../img/sprite_importance.png) -2px -1px;
 }
 
 .sprite.importance:hover {
-	background-position: -20px -1px;
+	background-position: -21px -1px;
 }
 
 .sprite.importance.active, .sprite.star.importance:hover {

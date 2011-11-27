@@ -5,6 +5,13 @@ by Anders Sahlin a.k.a. destructoBOT (malakeen@gmail.com)
 *********************************
 */
 
+Array.prototype.contains = function ( needle ) {
+   for (i in this) {
+       if (this[i] == needle) return true;
+   }
+   return false;
+}
+
 function MailAccount(settingsObj) {
    var requestTimeout = 10000;
 
@@ -57,9 +64,44 @@ function MailAccount(settingsObj) {
    function onGetInboxSuccess(data, callback) {
       var foundNewMail = false; 
       var parser = new DOMParser();
+      var starredData = new Array();
+      var importanceData = new Array();
       xmlDocument = $(parser.parseFromString(data, "text/xml"));
       var fullCount = xmlDocument.find('fullcount').text();
 
+      // Check Starred
+      $.ajax({
+         type: "GET",
+         dataType: "text",
+         url: mailURL + "feed/atom/starred?timestamp=" + Date.now(),
+         timeout: requestTimeout,
+         async: false,
+         success: function (data) { 
+            var starredXML = $(parser.parseFromString(data, "text/xml"));
+
+            starredXML.find('id').each( function (index, tag) {
+               starredData[index] = $(tag).text();
+            });
+         }
+      });
+
+      // Check Importance
+      $.ajax({
+         type: "GET",
+         dataType: "text",
+         url: mailURL + "feed/atom/important?timestamp=" + Date.now(),
+         timeout: requestTimeout,
+         async: false,
+         success: function (data) { 
+            var importanceXML = $(parser.parseFromString(data, "text/xml"));
+
+            importanceXML.find('id').each( function (index, tag) {
+               importanceData[index] = $(tag).text();
+            });
+         }
+      });
+
+      // Extract info from XML title
       try {
          mailTitle = $(xmlDocument.find('title')[0]).text().replace("Gmail - ", "");
          mailAddress = mailTitle.match(/([\S]+@[\S]+)/ig)[0];
@@ -68,12 +110,10 @@ function MailAccount(settingsObj) {
          return;
       }
 
-      //newestMail = null;
       var newMailArray = new Array();
 
       if (fullCount < unreadCount || unreadCount == -1) {
          // Mail count has been reduced, so we need to reload all mail.
-         // TODO: Find the old mail(s) and remove them instead.
          foundNewMail = true;
          mailArray = new Array();
       }
@@ -88,6 +128,20 @@ function MailAccount(settingsObj) {
          var id = link.replace(/.*message_id=(\d\w*).*/, "$1");
          var authorName = $(this).find('author').find('name').text();
          var authorMail = $(this).find('author').find('email').text();
+
+         // Is message starred?
+         if (starredData.contains($(this).find('id').text())) {
+            var isStarred = true;
+         } else {
+            var isStarred = false;
+         }
+
+         // Is message important?
+         if (importanceData.contains($(this).find('id').text())) {
+            var isImportant = true;
+         } else {
+            var isImportant = false;
+         }
 
          // Data checks
          if (authorName == null || authorName.length < 1)
@@ -115,7 +169,9 @@ function MailAccount(settingsObj) {
             "link": link,
             "issued": issued,
             "authorName": authorName,
-            "authorMail": authorMail
+            "authorMail": authorMail,
+            "isStarred": isStarred,
+            "isImportant": isImportant
          };
 
          var isNewMail = true;
@@ -314,8 +370,12 @@ function MailAccount(settingsObj) {
          var action = postObj.action;
 
          var postURL = mailURL.replace("http:", "https:");
-         postURL += "h/" + Math.ceil(1000000 * Math.random()) + "/";
+         postURL += Math.ceil(1000000 * Math.random()) + "/";
          var postParams = "t=" + threadid + "&at=" + gmailAt + "&act=" + action;
+
+         if (typeof(postObj.rid) != 'undefined') {
+            postParams = postParams + "&rid=" + postObj.rid;
+         }
 
          logToConsole(postURL);
          logToConsole(postParams);
@@ -540,6 +600,18 @@ function MailAccount(settingsObj) {
       }
    }
 
+   // Update value of thread entry
+   this.updateThreadValue = function (threadid, key, value) {
+      if (threadid != null) {console.log(threadid); 
+         $(mailArray).each(function() { 
+            if (this.id == threadid) {
+               console.log('Set thread ' + threadid + ' key ' + key + ' to ' + value);
+               this[key] = value;
+            }
+         });
+      }
+   }
+
    // Archives a thread
    this.archiveThread = function (threadid, callback) {
       if (threadid != null) {
@@ -568,7 +640,7 @@ function MailAccount(settingsObj) {
    }
 
    // Stars a thread
-   this.starThread = function (threadid, callback, value) {
+   this.starThread = function (threadid, value, callback) {
       
       if (value==true) {
          var action = 'st';
@@ -577,7 +649,27 @@ function MailAccount(settingsObj) {
       }
       
       if (threadid != null) {
-         postAction({ "threadid": threadid, "action": action }, callback);
+         postAction({ "threadid": threadid, "action": action }, function () {
+            that.updateThreadValue(threadid,'isStarred',value);
+            callback();
+         });
+      }
+   }
+
+   // Set thread importance
+   this.importanceThread = function (threadid, value, callback) {
+      
+      if (value==true) {
+         var action = 'mai';
+      } else {
+         var action = 'mani';
+      }
+      
+      if (threadid != null) {
+         postAction({ "threadid": threadid, "action": action, "rid":"mail%3Amai.8100.1.0" }, function () {
+            that.updateThreadValue(threadid,'isImportant',value);
+            callback();
+         });
       }
    }
 

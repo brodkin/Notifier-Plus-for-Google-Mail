@@ -137,8 +137,12 @@ function spamThread(accountId, mailid) {
    mailAccounts[accountId].spamThread(mailid, function() { hideMail(accountId, mailid); });
 }
 
-function starThread(accountId, mailid) {
-   mailAccounts[accountId].starThread(mailid);
+function starThread(accountId, mailid, value, callback) {
+   mailAccounts[accountId].starThread(mailid, value, callback);
+}
+
+function importanceThread(accountId, mailid, value, callback) {
+   mailAccounts[accountId].importanceThread(mailid, value, callback);
 }
 
 function applyLabelToThread(accountId, mailId, label) {
@@ -471,8 +475,18 @@ function renderAccount(account) {
             i18n: i18n
          });         
 
+         mailHtml = $(mailHtml);
+
+         // Starred Thread
+         if (mail.isStarred)
+            mailHtml.find('.starLink .sprite').addClass('active');
+
+         // Important Thread
+         if (mail.isImportant)
+            mailHtml.find('.importanceLink .sprite').addClass('active');
+
          // Add to account element
-         $(mailHtml).fadeIn("fast").appendTo(inboxElement);
+         mailHtml.fadeIn("fast").appendTo(inboxElement);
       });
 
       if (account.getMail().length == 0)
@@ -533,13 +547,28 @@ function renderAccount(account) {
    });
       
    inboxElement.find(".starLink").on('click',function () { 
-      var sprite = $(this).find(".sprite");
-      if (sprite.hasClass('active')) {
-         sprite.removeClass('active');
-         starThread(account.id, $(this).attr('mailId'), false);
+      sprite_star = $(this).find(".sprite");
+      if (sprite_star.hasClass('active')) {
+         starThread(account.id, $(this).attr('mailId'), false, function () {
+            sprite_star.removeClass('active');
+         });
       } else {
-         sprite.addClass('active');
-         starThread(account.id, $(this).attr('mailId'), true);
+         starThread(account.id, $(this).attr('mailId'), true, function () {
+            sprite_star.addClass('active');
+         });
+      }      
+   });
+
+   inboxElement.find(".importanceLink").on('click',function () { 
+      sprite_importance = $(this).find(".sprite");
+      if (sprite_importance.hasClass('active')) {
+         importanceThread(account.id, $(this).attr('mailId'), false, function () {
+            sprite_importance.removeClass('active');
+         });
+      } else {
+         importanceThread(account.id, $(this).attr('mailId'), true, function () {
+            sprite_importance.addClass('active');
+         });
       }      
    });
 }

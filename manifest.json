@@ -10,16 +10,16 @@
    }, 
    "content_scripts": [ {
       "all_frames": true,
-      "js": [ "src/mailto.js" ],
+      "js": [ "assets/js/mailto.js" ],
       "matches": [ "http://*/*", "https://*/*" ]
    } ],
    "description": "Displays the number of unread messages in your Gmail and Google Apps inbox. Preview mail, read, delete, archive and mark as spam!",
    "icons": {
-        "32": "img/icon_32.png",
-        "48": "img/icon_48.png",
-        "128": "img/icon_128.png"
+        "32": "assets/img/icon_32.png",
+        "48": "assets/img/icon_48.png",
+        "128": "assets/img/icon_128.png"
    },
-   "name": "Mail Checker Minus (Beta)",
+   "name": "Notifier Plus for Google Mail",
    "options_page": "options.html",
    "permissions": [ 
       "background",
@@ -30,5 +30,5 @@
       "http://*.google.com/*", 
       "https://*.google.com/*" 
    ],
-   "version": "1.2.4.9"
+   "version": "1.3"
 }

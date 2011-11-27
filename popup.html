@@ -1,161 +1,164 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-   <link rel="stylesheet" type="text/css" media="screen" href="css/scrollbar.css" />
-   <link rel="stylesheet" type="text/css" media="screen" href="css/popup.css" />
-    
-   <script src="src/global.js"></script>
-   <script src="src/jquery-1.7.min.js"></script>
-   <script src="src/encoder.js"></script>
-   <script src="src/date.js"></script>
-   <script src="src/template-engine.js"></script>
-   <script src="src/mailaccount.class.js"></script>
-   <script src="src/popup.js"></script>
-   <script src="src/i18n.js"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/scrollbar.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/popup.css" />
+	 
+	<script src="assets/js/global.js"></script>
+	<script src="assets/js/jquery-1.7.min.js"></script>
+	<script src="assets/js/encoder.js"></script>
+	<script src="assets/js/date.js"></script>
+	<script src="assets/js/template-engine.js"></script>
+	<script src="assets/js/mailaccount.class.js"></script>
+	<script src="assets/js/popup.js"></script>
+	<script src="assets/js/i18n.js"></script>
 
-   <title>Mail Checker Minus - Popup page</title>
+	<title>Notifier Plus for Google Mail - Popup</title>
 </head>
 <body id="body">
-   <!-- Template for an account !-->
-   <script id="AccountTemplate" type="text/html">
+	<!-- Template for an account !-->
+	<script id="AccountTemplate" type="text/html">
 
-   <div id="content_<#= account.id #>" class="indicator i<#= account.id % 4 #> account">
-      <div id="inbox_<#= account.id #>" class="vbox rounded">
-         <div class="hbox wide">
-            <div class="hbox padded toggleLink contrast border-right">
-               <a class="imageLink" accountId="<#= account.id #>" href="#" title=""><img src="img/arrow_down.png" /></a>
-            </div>
-            <div class="hbox padded wide inbox">
-               <div class="hbox padded wide">            
-                  <a class="inboxLink" accountId="<#= account.id #>" href="#" title="<#= account.getInboxLink() #>">
-                     <#= account.getInboxLink() #>
-                     <# if(account.unreadCount > 0) { #><span class="unreadCount">(<#= account.unreadCount #>)</span><# } #>
-                  </a>
-               </div>
-               <div class="hbox padded" style="padding-right: 0">
-                  <a class="composeLink imageLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('composeLinkTitle') #>"><img src="img/compose.png" /></a>
-                  <a class="sendpageLink imageLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('sendPageLinkTitle') #>"><img src="img/send_page.png" /></a>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
+	<section id="content_<#= account.id #>" class="account">
+		<div id="inbox_<#= account.id #>" class="vbox">
+			<header>
+				<div class="hbox">
+					<div class="hbox toggleLink">
+						<a accountId="<#= account.id #>" href="#" title=""><img src="assets/img/arrow_down.png" /></a>
+					</div>
+					<div class="hbox flex-1 inbox">
+						<div class="hbox flex-1">            
+							<a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" href="#" title="<#= account.getInboxLink() #>">
+								<#= account.getInboxLink() #>
+							</a>
+						</div>
+						<div class="hbox actions">
+							<# if(account.unreadCount > 0) { #>
+								<span class="unreadCount"><#= account.unreadCount #></span>
+							<# } #>
+							<a class="composeLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('composeLinkTitle') #>"><span class="sprite white message"></span></a>
+							<a class="sendpageLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('sendPageLinkTitle') #>"><span class="sprite white send"></span></a>
+						</div>
+					</div>
+				</div>
+			</header>
+		</div>
+	</section>
 
-   </script>
-    
-   <!-- Template for a mail !-->
-   <script id="MailTemplate" type="text/html">
+	</script>
+	 
+	<!-- Template for a mail !-->
+	<script id="MailTemplate" type="text/html">
 
-   <div class="vbox mail" id="<#= mail.id #>"> 
-      <div class="hbox border-top padded sender">
-         <div class="hbox wide">
-            <label class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></label>
-         </div>
+	<section class="vbox mail" id="<#= mail.id #>"> 
+		
+		<div class="hbox line1">
+			<div class="hbox">
+				<a class="starLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><span class="sprite star"></span></a>
+			</div>
+			<div class="hbox flex-1 arg">
+				<a class="openLink trim" mailId="<#= mail.id #>" href="#" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
+			</div>
+			<div class="hbox actions arg">
+				<a class="button replyLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('replyLinkTitle') #>"><span class="sprite reply"></span></a>
+				<a class="button archiveLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
+				<a class="button deleteLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
+				<a class="button spamLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
+				<a class="button labelLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('showLabelsTitle') #>"><span class="sprite label"></span></a>
+			</div>
+		</div>
 
-         <div class="hbox mailActions">
-            <label title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></label>
-            <a class="readLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('readLinkTitle') #>"><#= i18n.get('readLink') #></a>
-            <a class="deleteLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('deleteLinkTitle') #>"><#= i18n.get('deleteLink') #></a>
-            <a class="spamLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('spamLinkTitle') #>"><#= i18n.get('spamLink') #></a>
-            <a class="archiveLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('archiveLinkTitle') #>"><#= i18n.get('archiveLink') #></a>
-         </div>
-      </div>  
+		<div class="hbox line2">
+			<div class="hbox flex-1">
+				<a class="importanceLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('importanceLinkTitle') #>"><span class="sprite importance"></span></a>
+				<span class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></span>
+			</div>
 
-      <div class="hbox mailLabels" id="labelBox_<#= mail.id #>" mailId="<#= mail.id #>"></div>
-      
-      <div class="hbox title padded">
-         <!--<div class="hbox">
-            <a class="starlink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><#= i18n.get('starLinkTitle') #></a>
-         </div>!-->
-         <div class="hbox wide">
-            <a class="starLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><img src="img/star.png" /></a>
-            <a class="openLink" mailId="<#= mail.id #>" href="#" title="<#= mail.title #>"><#= mail.shortTitle #></a>            
-         </div>
-         <div class="hbox">
-            <a class="labelLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('showLabelsTitle') #>"><img src="img/label.png" /></a>
-            <a class="fullLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('fullLinkTitle') #>"><img src="img/more.png" /></a>
-            <a class="replyLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('replyLinkTitle') #>"><img src="img/reply.png" /></a>
-         </div>
-      </div>
+			<div class="hbox">
+				<label title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></label>
+			</div>
+		</div>  
 
-      <div class="vbox summary padded" mailId="<#= mail.id #>">
-         <#= mail.summary #>
-      </div>
+		<div class="hbox mailLabels" id="labelBox_<#= mail.id #>" mailId="<#= mail.id #>"></div>
+		
 
-      <div class="overlay loading" id="loadingBox_<#= mail.id #>"></div>
-   </div>
-   
-   </script>
-    
-    <div id="fullscreenContainer">
-        <div id="fullscreenControls" class="vbox">
-            <div class="hbox padded">
-               <div class="hbox wide">
-                  <a class="openLink" href="#"></a>
-               </div>
-               <div class="hbox padded">
-                  <a class="previousLink" href="#" title="Previous mail">
-                     &lsaquo; Previous<!--<img src="/img/up.png" alt="Previous mail" />-->
-                  </a>
-               </div>
-               <div class="hbox padded">
-                  <span class="countLabel"></span>
-               </div>
-               <div class="hbox padded">
-                  <a class="nextLink" href="#" title="Next mail">
-                     Next &rsaquo;<!--<img src="/img/down.png" alt="Next mail" />-->
-                  </a>
-               </div>
-               <div class="hbox padded">
-                  <a class="hideLink" href="#" title="Close preview">
-                     Back<!--<img src="/img/less.png" alt="Close preview" />-->
-                  </a>
-               </div>
-               <div class="hbox padded">
-                  <a class="closeLink" href="#" title="Close window">
-                     Close<!--<img src="/img/close.png" alt="Close window" />-->
-                  </a>
-               </div>
-            </div>
-            <div class="hbox padded">
-               <div class="hbox wide">
-                  <a class="starLink imageLink" href="#"><img src="img/star.png" /></a>
-                  <span class="authorLink author"></span>                  
-               </div>
-               <div class="hbox">
-                  <span class="issuedLink"></span>
-                  &nbsp;
-                  <a class="replyLink imageLink" href="#"><img src="img/reply.png" /></a>
-                  &nbsp;
-                  <a class="readLink" href="#"></a>
-                  &nbsp;
-                  <a class="deleteLink" href="#"></a>
-                  &nbsp;
-                  <a class="spamLink"  href="#"></a>
-                  &nbsp;
-                  <a class="archiveLink" href="#"></a>    
-               </div>
-            </div>
-        </div>
-        <div id="fullscreenContent"></div>
-    </div>
-    
-      
-    <div id="title">
-      <span>Mail Checker Minus</span>
-    </div>
 
-    <div id="menu">
-        <a href="javascript:refreshMail()" id="refresh" class="imageLink"><img src="img/refresh.png" /></a> 
-        <a href="javascript:openOptions()" id="options" class="imageLink"><img src="img/wrench.png" /></a> 
-        <a href="http://www.gmail.com" target="_blank" title="Gmail.com"><img src="img/logo.png" /></a>
-    </div>
-    
-<!--    <div id="resize">
-        <a href="javascript:resizeWindow()" id="resizeLink" class="squareLink"><img src="img/resize.png" class="hidden" /></a>
-    </div>-->
-    <div id="content"></div>
+		<div class="vbox summary trim" mailId="<#= mail.id #>">
+			<span class="gradient"></span>
+			<#= mail.summary #>
+		</div>
+
+		<div class="overlay loading" id="loadingBox_<#= mail.id #>"></div>
+	</section>
+	
+	</script>
+	 
+	 <div id="fullscreenContainer">
+		  <div id="fullscreenControls" class="vbox">
+				<div class="hbox padded">
+					<div class="hbox flex-1">
+						<a class="openLink" href="#"></a>
+					</div>
+					<div class="hbox padded">
+						<a class="previousLink" href="#" title="Previous mail">
+							&lsaquo; Previous<!--<img src="/img/up.png" alt="Previous mail" />-->
+						</a>
+					</div>
+					<div class="hbox padded">
+						<span class="countLabel"></span>
+					</div>
+					<div class="hbox padded">
+						<a class="nextLink" href="#" title="Next mail">
+							Next &rsaquo;<!--<img src="/img/down.png" alt="Next mail" />-->
+						</a>
+					</div>
+					<div class="hbox padded">
+						<a class="hideLink" href="#" title="Close preview">
+							Back<!--<img src="/img/less.png" alt="Close preview" />-->
+						</a>
+					</div>
+					<div class="hbox padded">
+						<a class="closeLink" href="#" title="Close window">
+							Close<!--<img src="/img/close.png" alt="Close window" />-->
+						</a>
+					</div>
+				</div>
+				<div class="hbox padded">
+					<div class="hbox flex-1">
+						<a class="starLink imageLink" href="#"><img src="assets/img/star.png" /></a>
+						<span class="authorLink author"></span>                  
+					</div>
+					<div class="hbox">
+						<span class="issuedLink"></span>
+						&nbsp;
+						<a class="replyLink imageLink" href="#"><img src="assets/img/reply.png" /></a>
+						&nbsp;
+						<a class="readLink" href="#"></a>
+						&nbsp;
+						<a class="deleteLink" href="#"></a>
+						&nbsp;
+						<a class="spamLink"  href="#"></a>
+						&nbsp;
+						<a class="archiveLink" href="#"></a>    
+					</div>
+				</div>
+		  </div>
+		  <div id="fullscreenContent"></div>
+	 </div>
+	 
+	<section id="titleBlock">
+		 <div id="title">
+			<img src="assets/img/logo.png">
+			<span>Notifier Plus for Google Mail</span>
+		 </div>
+		 <div id="menu">
+			  <a href="javascript:refreshMail()" id="refresh" title="Refresh Messages"><span class="sprite refresh"></span></a> 
+			  <a href="javascript:openOptions()" id="options" title="Extension Settings"><span class="sprite gear"></span></a> 
+		 </div>
+		 <div class="clearfix"></div>
+	</section>
+	<section id="content"></section>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-   <link rel="stylesheet" type="text/css" media="screen" href="css/popup.css" />
+   <link rel="stylesheet" type="text/css" media="screen" href="assets/styles/popup.css" />
    <style type="text/css">
    html, body { margin: 0; padding: 0; width: 100%; overflow: hidden; min-height: 120px; }
    .border, .rounded { border: 0; margin-top: 0; }
@@ -39,12 +39,12 @@
    
 }
 </style>
-   <script src="src/date.js"></script>
-   <script src="src/jquery-1.7.min.js"></script>
-   <script src="src/template-engine.js"></script>
-   <script src="src/mailaccount.class.js"></script>
-   <script src="src/notify.js"></script>
-   <script src="src/i18n.js"></script>
+   <script src="assets/js/date.js"></script>
+   <script src="assets/js/jquery-1.7.min.js"></script>
+   <script src="assets/js/template-engine.js"></script>
+   <script src="assets/js/mailaccount.class.js"></script>
+   <script src="assets/js/notify.js"></script>
+   <script src="assets/js/i18n.js"></script>
 </head>
 <body id="body">
    <!-- Template for a mail !-->
@@ -68,7 +68,7 @@
 
          <div class="hbox title">
             <div class="hbox wide padded">
-               <a class="starLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><img src="img/star.png" /></a>
+               <a class="starLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><img src="assets/img/star.png" /></a>
                <a class="openLink" mailId="<#= mail.id #>" href="#" title="<#= mail.title #>"><#= mail.shortTitle #></a>
             </div>
          </div> 

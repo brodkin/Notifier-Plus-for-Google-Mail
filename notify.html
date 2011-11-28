@@ -3,42 +3,6 @@
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <link rel="stylesheet" type="text/css" media="screen" href="assets/styles/popup.css" />
-   <style type="text/css">
-   html, body { margin: 0; padding: 0; width: 100%; overflow: hidden; min-height: 120px; }
-   .border, .rounded { border: 0; margin-top: 0; }
-   .indicator { border-radius: 0; border: none; }
-   .address {
-      background-image: -webkit-gradient(linear,
-          left bottom,
-          left top,
-          color-stop(0.1, #79B),
-          color-stop(0.8, #7090B0)
-      );
-   }
-   .address div {
-      width: 100%;
-      text-align: center;
-   }
-   .address div a {
-      color: White;
-      font-weight: bold;
-      font-size: 100%;
-   }
-   .hiddenSummaryActions {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-      float: right;
-   }
-   .summary {
-      opacity: 1;
-   }
-   
-   a { cursor: pointer; }
-   
-}
-</style>
    <script src="assets/js/date.js"></script>
    <script src="assets/js/jquery-1.7.min.js"></script>
    <script src="assets/js/template-engine.js"></script>
@@ -49,48 +13,51 @@
 <body id="body">
    <!-- Template for a mail !-->
    <script id="MailTemplate" type="text/html">
-
-<div class="indicator i<#= account.id % 4 #>">
-   <div id="inbox_<#= account.id #>" class="vbox rounded">
-      <div class="vbox" id="<#= mail.id #>"> 
-         <div class="hbox address padded">
-            <div><a class="inboxLink" title="<#= account.getInboxLink() #>"><#= account.getAddress() #></a></div>
-         </div>  
-
-         <div class="hbox sender">
-            <div class="hbox wide padded">
-               <a class="author" href="mailto:<#= mail.authorMail  #>" title="<#= mail.authorMail  #>"><#= mail.authorName  #></a>
+   <section id="content_<#= account.id #>" class="account">
+      <div id="inbox_<#= account.id #>" class="vbox">
+         <header>
+            <div class="hbox">
+               <div class="hbox flex-1 inbox">
+                  <div class="hbox flex-1">            
+                     <a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" title="<#= account.getInboxLink() #>">
+                        <#= account.getInboxLink() #>
+                     </a>
+                  </div>
+               </div>
             </div>
-            <div class="hbox padded">
-               <label><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></label>
+         </header>
+         <section class="vbox mail" id="<#= mail.id #>"> 
+            
+            <div class="hbox line1">
+               <div class="hbox flex-1 arg">
+                  <a class="openLink trim" mailId="<#= mail.id #>" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
+               </div>
+               <div class="hbox actions arg">
+                  <a class="button archiveLink" mailId="<#= mail.id #>" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
+                  <a class="button deleteLink" mailId="<#= mail.id #>" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
+                  <a class="button spamLink" mailId="<#= mail.id #>" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
+               </div>
             </div>
-         </div>  
 
-         <div class="hbox title">
-            <div class="hbox wide padded">
-               <a class="starLink imageLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><img src="assets/img/star.png" /></a>
-               <a class="openLink" mailId="<#= mail.id #>" href="#" title="<#= mail.title #>"><#= mail.shortTitle #></a>
+            <div class="hbox line2">
+               <div class="hbox flex-1">
+                  <span class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></span>
+               </div>
+
+               <div class="hbox">
+                  <span title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></span>
+               </div>
+            </div>  
+
+            <div class="vbox summary" mailId="<#= mail.id #>">
+               <div class="trim">
+                  <span class="gradient"></span>
+                  <#= mail.summary #>
+               </div>
             </div>
-         </div> 
-
-         <div class="hbox">
-            <div class="hbox wide border-top padded summary" mailId="<#= mail.id #>">
-               <#= mail.summary #>
-            </div>
-         </div>
-
-         <div class="hbox padded hiddenSummaryActions">   
-            <a class="readLink" mailId="<#= mail.id #>" title="<#= i18n.get('readLinkTitle') #>"><#= i18n.get('readLink') #></a>
-            &nbsp;
-            <a class="deleteLink" mailId="<#= mail.id #>" title="<#= i18n.get('deleteLinkTitle') #>"><#= i18n.get('deleteLink') #></a>
-            &nbsp;
-            <a class="spamLink" mailId="<#= mail.id #>" title="<#= i18n.get('spamLinkTitle') #>"><#= i18n.get('spamLink') #></a>
-            &nbsp;
-            <a class="archiveLink" mailId="<#= mail.id #>" title="<#= i18n.get('archiveLinkTitle') #>"><#= i18n.get('archiveLink') #></a>
-         </div>  
+         </section>
       </div>
-   </div>
-</div>
+   </section>
    </script>
 </body>
 </html>

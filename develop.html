@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Notifier Plus for Google Mail</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+		<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/general.css" />
+
+		<script src="assets/js/global.js"></script>
+		<script src="assets/js/jquery-1.7.min.js"></script>
+		<script src="assets/js/settings.js"></script>
+		<script src="assets/js/i18n.js"></script>
+		<script src="assets/js/mailaccount.class.js"></script>
+		<script src="assets/js/utility.js"></script>
+
+		<script>
+			var developmentBackground = chrome.extension.getBackgroundPage();
+		</script>
+
+	</head>
+	<body>
+		<ul>
+			<li><a href="javascript:developmentBackground.notify()">Test Notification</a></li>
+		</ul>
+	</body>
+</html>

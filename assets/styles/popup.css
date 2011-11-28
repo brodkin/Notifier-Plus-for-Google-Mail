@@ -279,12 +279,13 @@ section.mail .trim {
 	white-space: nowrap;
 	display: block;
 	width: 100%;
+	height: 15px;
 }
 
 section.mail .trim .gradient {
 	display: block;
 	width: 100%;
-	height: 100%;
+	height: 15px;
 	position: absolute;
 	float: right;
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(90%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1))); /* Chrome */
@@ -306,7 +307,7 @@ section.mail .overlay
    top: 0;
    width: 100%;
    height: 100%;
-   background-color: rgba(250, 250, 250, 0.9);
+   background-color: rgba(0, 0, 0, 0.1);
    display: none;
 }
 
@@ -387,30 +388,7 @@ ul.labels li:hover
 	background-color: #e8e6e8;
 }
 
-/* Mail entry CSS */
-
-.hiddenAccountActions,
-.hiddenSummaryActions,
-.hiddenMailActions 
-{
-   display: none;
-}
-
-.hiddenSummaryActions
-{
-   background-color: #ffffcc;
-   text-align: right;
-}
-
-.mailActions a
-{
-   padding-left: 5px;
-}
-
-.hiddenSummaryActions
-{
-   text-align: right;
-}
+/* Sprites */
 
 .sprite {
 	background-image: url(../img/sprite_black.png);

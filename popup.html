@@ -26,11 +26,11 @@
 			<header>
 				<div class="hbox">
 					<div class="hbox toggleLink">
-						<a accountId="<#= account.id #>" href="#" title=""><img src="assets/img/arrow_down.png" /></a>
+						<a accountId="<#= account.id #>" title=""><img src="assets/img/arrow_down.png" /></a>
 					</div>
 					<div class="hbox flex-1 inbox">
 						<div class="hbox flex-1">            
-							<a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" href="#" title="<#= account.getInboxLink() #>">
+							<a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" title="<#= account.getInboxLink() #>">
 								<#= account.getInboxLink() #>
 							</a>
 						</div>
@@ -38,8 +38,8 @@
 							<# if(account.unreadCount > 0) { #>
 								<span class="unreadCount"><#= account.unreadCount #></span>
 							<# } #>
-							<a class="composeLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('composeLinkTitle') #>"><span class="sprite white message"></span></a>
-							<a class="sendpageLink" accountId="<#= account.id #>" href="#" title="<#= i18n.get('sendPageLinkTitle') #>"><span class="sprite white send"></span></a>
+							<a class="composeLink" accountId="<#= account.id #>" title="<#= i18n.get('composeLinkTitle') #>"><span class="sprite white message"></span></a>
+							<a class="sendpageLink" accountId="<#= account.id #>" title="<#= i18n.get('sendPageLinkTitle') #>"><span class="sprite white send"></span></a>
 						</div>
 					</div>
 				</div>
@@ -56,38 +56,38 @@
 		
 		<div class="hbox line1">
 			<div class="hbox">
-				<a class="starLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('starLinkTitle') #>"><span class="sprite star"></span></a>
+				<a class="starLink" mailId="<#= mail.id #>" title="<#= i18n.get('starLinkTitle') #>"><span class="sprite star"></span></a>
 			</div>
 			<div class="hbox flex-1 arg">
-				<a class="openLink trim" mailId="<#= mail.id #>" href="#" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
+				<a class="openLink trim" mailId="<#= mail.id #>" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
 			</div>
 			<div class="hbox actions arg">
-				<a class="button replyLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('replyLinkTitle') #>"><span class="sprite reply"></span></a>
-				<a class="button archiveLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
-				<a class="button deleteLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
-				<a class="button spamLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
-				<a class="button labelLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('showLabelsTitle') #>"><span class="sprite label"></span></a>
+				<a class="button replyLink" mailId="<#= mail.id #>" title="<#= i18n.get('replyLinkTitle') #>"><span class="sprite reply"></span></a>
+				<a class="button archiveLink" mailId="<#= mail.id #>" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
+				<a class="button deleteLink" mailId="<#= mail.id #>" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
+				<a class="button spamLink" mailId="<#= mail.id #>" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
+				<a class="button labelLink" mailId="<#= mail.id #>" title="<#= i18n.get('showLabelsTitle') #>"><span class="sprite label"></span></a>
 			</div>
 		</div>
 
 		<div class="hbox line2">
 			<div class="hbox flex-1">
-				<a class="importanceLink" mailId="<#= mail.id #>" href="#" title="<#= i18n.get('importanceLinkTitle') #>"><span class="sprite importance"></span></a>
+				<a class="importanceLink" mailId="<#= mail.id #>" title="<#= i18n.get('importanceLinkTitle') #>"><span class="sprite importance"></span></a>
 				<span class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></span>
 			</div>
 
 			<div class="hbox">
-				<label title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></label>
+				<span title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></span>
 			</div>
 		</div>  
 
 		<div class="hbox mailLabels" id="labelBox_<#= mail.id #>" mailId="<#= mail.id #>"></div>
-		
 
-
-		<div class="vbox summary trim" mailId="<#= mail.id #>">
-			<span class="gradient"></span>
-			<#= mail.summary #>
+		<div class="vbox summary" mailId="<#= mail.id #>">
+			<div class="trim">
+				<span class="gradient"></span>
+				<#= mail.summary #>
+			</div>
 		</div>
 
 		<div class="overlay loading" id="loadingBox_<#= mail.id #>"></div>
@@ -98,10 +98,10 @@
 		  <div id="fullscreenControls" class="vbox">
 				<div class="hbox padded">
 					<div class="hbox flex-1">
-						<a class="openLink" href="#"></a>
+						<a class="openLink"></a>
 					</div>
 					<div class="hbox padded">
-						<a class="previousLink" href="#" title="Previous mail">
+						<a class="previousLink" title="Previous mail">
 							&lsaquo; Previous<!--<img src="/img/up.png" alt="Previous mail" />-->
 						</a>
 					</div>
@@ -109,38 +109,38 @@
 						<span class="countLabel"></span>
 					</div>
 					<div class="hbox padded">
-						<a class="nextLink" href="#" title="Next mail">
+						<a class="nextLink" title="Next mail">
 							Next &rsaquo;<!--<img src="/img/down.png" alt="Next mail" />-->
 						</a>
 					</div>
 					<div class="hbox padded">
-						<a class="hideLink" href="#" title="Close preview">
+						<a class="hideLink" title="Close preview">
 							Back<!--<img src="/img/less.png" alt="Close preview" />-->
 						</a>
 					</div>
 					<div class="hbox padded">
-						<a class="closeLink" href="#" title="Close window">
+						<a class="closeLink" title="Close window">
 							Close<!--<img src="/img/close.png" alt="Close window" />-->
 						</a>
 					</div>
 				</div>
 				<div class="hbox padded">
 					<div class="hbox flex-1">
-						<a class="starLink imageLink" href="#"><img src="assets/img/star.png" /></a>
+						<a class="starLink imageLink"><img src="assets/img/star.png" /></a>
 						<span class="authorLink author"></span>                  
 					</div>
 					<div class="hbox">
 						<span class="issuedLink"></span>
 						&nbsp;
-						<a class="replyLink imageLink" href="#"><img src="assets/img/reply.png" /></a>
+						<a class="replyLink imageLink"><img src="assets/img/reply.png" /></a>
 						&nbsp;
-						<a class="readLink" href="#"></a>
+						<a class="readLink"></a>
 						&nbsp;
-						<a class="deleteLink" href="#"></a>
+						<a class="deleteLink"></a>
 						&nbsp;
-						<a class="spamLink"  href="#"></a>
+						<a class="spamLink" ></a>
 						&nbsp;
-						<a class="archiveLink" href="#"></a>    
+						<a class="archiveLink"></a>    
 					</div>
 				</div>
 		  </div>

@@ -617,7 +617,7 @@ function MailAccount(settingsObj) {
       if (threadid != null) {
          if (archiveAsRead) {
             postAction({ "threadid": threadid, "action": "rd" });
-            postAction({ "threadid": threadid, "action": "arch" }, callback);
+            postAction({ "threadid": threadid, "action": "rc_^i" }, callback);
          } else {
             postAction({ "threadid": threadid, "action": "rd" }, callback);
          }

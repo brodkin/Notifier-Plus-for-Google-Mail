@@ -260,7 +260,7 @@ function showBody(accountid, mailid, mailbody) {
 
       if(previousMail) {
          fullscreenControl.find('.previousLink').css('visibility','visible');
-         fullscreenControl.find('.previousLink').click(function () {
+         fullscreenControl.find('.previousLink').on('click', function () {
             getThread(previousMail.accountId, previousMail.id);
          });
       } else {
@@ -269,47 +269,47 @@ function showBody(accountid, mailid, mailbody) {
 
       if(nextMail) {
          fullscreenControl.find('.nextLink').css('visibility','visible');
-         fullscreenControl.find('.nextLink').click(function () {
+         fullscreenControl.find('.nextLink').on('click', function () {
             getThread(nextMail.accountId, nextMail.id);
          });
       } else {
          fullscreenControl.find('.nextLink').css('visibility','hidden');
       }
 
-      fullscreenControl.find('.closeLink').click(function () {
+      fullscreenControl.find('.closeLink').on('click', function () {
          window.close();
       });
-      fullscreenControl.find('.hideLink').click(function () {
+      fullscreenControl.find('.hideLink').on('click', function () {
          hideBody();
       });
 
-      fullscreenControl.find('.readLink').click(function () {
+      fullscreenControl.find('.readLink').on('click', function () {
          readThread(accountid, mailid);
          nextPreviousOrHide();
       });
-      fullscreenControl.find('.replyLink').click(function () {
+      fullscreenControl.find('.replyLink').on('click', function () {
          replyTo(accountid, mailid);
          nextPreviousOrHide();
       });
-      fullscreenControl.find('.deleteLink').click(function () {
+      fullscreenControl.find('.deleteLink').on('click', function () {
          deleteThread(accountid, mailid);
          nextPreviousOrHide();
       });
-      fullscreenControl.find('.spamLink').click(function () {
+      fullscreenControl.find('.spamLink').on('click', function () {
          spamThread(accountid, mailid);
          nextPreviousOrHide();
       });
-      fullscreenControl.find('.archiveLink').click(function () {
+      fullscreenControl.find('.archiveLink').on('click', function () {
          archiveThread(accountid, mailid);
          nextPreviousOrHide();
       });
 
-      fullscreenControl.find('.openLink').click(function () {
+      fullscreenControl.find('.openLink').on('click', function () {
          openMail(accountid, mailid);
          hideBody();
       });
 
-      fullscreenControl.find('.starLink').click(function () {
+      fullscreenControl.find('.starLink').on('click', function () {
          $(this).css('opacity', '1');
          starThread(accountid, mailid);
       });
@@ -435,9 +435,9 @@ function renderMail() {
    });
 
    // Add event handlers
-   $(".inboxLink").click(function () { openInbox($(this).attr('accountId')); });
-   $(".composeLink").click(function () { composeNew($(this).attr('accountId')); });
-   $(".sendpageLink").click(function () { sendPage($(this).attr('accountId')); });
+   $(".inboxLink").on('click', function () { openInbox($(this).attr('accountId')); });
+   $(".composeLink").on('click', function () { composeNew($(this).attr('accountId')); });
+   $(".sendpageLink").on('click', function () { sendPage($(this).attr('accountId')); });
 }
 
 function renderAccount(account) {
@@ -492,7 +492,7 @@ function renderAccount(account) {
       if (account.getMail().length == 0)
          inboxElement.find(".toggleLink").hide();
 
-      inboxElement.find(".toggleLink").click(function () {
+      inboxElement.find(".toggleLink").on('click', function () {
          inboxElement.find('.mail').slideToggle('fast');
 
          if ($(this).find('img').attr('src') == 'assets/img/arrow_right.png') {
@@ -517,7 +517,7 @@ function renderAccount(account) {
             labelElement.text(_label);
             labelElement.attr("title", "Apply label '" + _label + "'");
 
-            labelElement.click(function() {
+            labelElement.on('click', function() {
                $(this).toggleClass("applied");               
                labelContainer.slideUp(100);
                applyLabelToThread(account.id, mailId, _label);
@@ -531,17 +531,17 @@ function renderAccount(account) {
    });
 
    // Hook up event handlers
-   inboxElement.find(".readLink").click(function () { readThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".deleteLink").click(function () { deleteThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".spamLink").click(function () { spamThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".archiveLink").click(function () { archiveThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".fullLink").click(function () { getThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".summary").click(function () { getThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".replyLink").click(function () { replyTo(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".openLink").click(function () { openMail(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".readLink").on('click', function () { readThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".deleteLink").on('click', function () { deleteThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".spamLink").on('click', function () { spamThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".archiveLink").on('click', function () { archiveThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".fullLink").on('click', function () { getThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".summary").on('click', function () { getThread(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".replyLink").on('click', function () { replyTo(account.id, $(this).attr('mailId')); });
+   inboxElement.find(".openLink").on('click', function () { openMail(account.id, $(this).attr('mailId')); });
 
    
-   inboxElement.find(".labelLink").click(function () { 
+   inboxElement.find(".labelLink").on('click',function () { 
       var mailId = $(this).attr('mailId');
       $("#labelBox_" + mailId).slideToggle(100);
    });

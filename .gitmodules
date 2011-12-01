@@ -1,0 +1,3 @@
+[submodule "lib/uniform"]
+	path = lib/uniform
+	url = git://github.com/pixelmatrix/uniform.git

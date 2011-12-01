@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
-   <head>
-		<title>Notifier Plus for Google Mail :: Options and Settings</title>
+	<head>
+		<title>Notifier Plus for Google Mail&trade; :: Options and Settings</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
-		<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/general.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/reset.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/options.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="lib/uniform/css/uniform.default.css" />
 
 		<script src="assets/js/global.js"></script>
 		<script src="assets/js/jquery-1.7.min.js"></script>
@@ -13,152 +15,330 @@
 		<script src="assets/js/mailaccount.class.js"></script>
 		<script src="assets/js/utility.js"></script>
 		<script src="assets/js/options.js"></script>
-   </head>
-   <body>
-   <div id="main">
-       <h1 class="title">Notifier Plus for Google Mail</h1>
-       <form>
-       <table>
-           <tr>
-               <td style="background-color: #ffffff">                
-                   <span class="top_right"><img src="assets/img/icon_48.png" alt="Icon" /></span>
-                   <h1>Options</h1>
-                   <p>Please take a moment and configure the extension to fit your needs. If you have an account at a Google Apps domain, fill in the correct URL in the Account-section below.</p>
-                   <p>For help and troubleshooting, please visit the <a href="https://github.com/aceat64/MailCheckerMinus" title="Visit the github page" target="_blank"><strong>github page</strong></a>!</p>
-               </td>
-           </tr>
-           <tr>
-		   <td  style="padding: 0">
-			   <ul class="menu">
-				   <li><a href="javascript:showContent(0)" title="View general settings">General</a></li>
-				   <li><a href="javascript:showContent(1)" title="View notification settings">Notifications</a></li>
-				   <li><a href="javascript:showContent(2)" title="View account settings">Accounts</a></li>
-				   <li><a href="javascript:showContent(3)" title="View visual settings">Visual</a></li>
-				   <li><a href="javascript:showContent(4)" title="View extension icon settings">Icon</a></li>
-			   </ul>
-			   <div id="content_0" class="content invisible">
-				   <h2>General settings</h2>
-				   <input type="checkbox" id="archive_read" /> <label for="archive_read">Archive marks as read</label>  <a title="Enable this setting to mark a mail as read when you archive it" style="cursor: help">?</a>
-				   <br /><input type="checkbox" id="showfull_read" /> <label for="showfull_read">Previewing marks as read</label>  <a title="Enable this setting to mark a mail as read when previewing it in the popup window" style="cursor: help">?</a>
-				   <!--<br /><input type="checkbox" id="force_ssl" /> <label for="force_ssl">Always use SSL</label> <a title="Enable this setting to always use SSL when accessing Google Mail" style="cursor: help">?</a>!-->
-				   <br /><input type="checkbox" id="open_tabs" /> <label for="open_tabs">Open compose in tab</label>  <a title="Enable this setting to open mail composing in a new tab instead of a new window (also applies to mailto-links)" style="cursor: help">?</a>
-				   <br /><input type="checkbox" id="no_mailto" /> <label for="no_mailto">Ignore mailto-links</label> <a title="Enable this setting to ignore parsing of mailto-links and open them in your regular mail client instead" style="cursor: help">?</a>
-				   <br /><input type="checkbox" id="hide_count" /> <label for="hide_count">Hide unread mail count</label> <a title="Enable this setting to hide the unread count number from the browser action icon" style="cursor: help">?</a>
-			   </div>
-			   <div id="content_1" class="content invisible">
-				   <h2>Notification settings</h2>
-				   <input type="checkbox" id="animate_off" /> <label for="animate_off">Disable icon animation</label> <a title="Disables animation of the icon when there is new mail" style="cursor: help">?</a>
-               <br />
-               <br />
-               <fieldset>
-                  <legend>Sound notifications</legend>
-				      <input type="checkbox" id="sound_off" /> <label for="sound_off">Disable notification sound</label> <a title="Disables notification sound when new mail arrives" style="cursor: help">?</a>
-                  <br />
-                  <br />
-                  Notification sound:
-                  <select id="sn_audio">
-				          <option id="sn_audio_0" value="chime.mp3">Chime</option>
-				          <option id="sn_audio_1" value="ding.ogg">Ding</option>
-				          <option id="sn_audio_c" value="custom">Custom</option>
-				      </select>
-                  <a href="javascript:void(0);" onclick="playNotificationSound()" title="Play notification sound" style="border: 0"><img src="assets/img/play.png" alt="Play" /></a>
-                  <br /><input type="file" id="sn_audio_src" accept="audio/wav, audio/x-wav, audio/mpeg, audio/vorbis, application/ogg" onchange="handleAudioFile(this.files)" />
-                  <input type="hidden" id="sn_audio_enc" />
-               </fieldset>
-               <br />				   
-               <fieldset>
-                  <legend>Desktop notifications</legend>                  
-				      <input type="checkbox" id="show_notification" onchange="requestUserPermission()" /> <label for="show_notification">Show desktop notifications</label>  <a title="Enable this setting to show a notification when new mail arrives" style="cursor: help">?</a>
-				      <br />
-                  <br />
-                  Timeout:  
-				      <select id="dn_timeout">
-				          <option id="dn_timeout_3000" value="3000">3 seconds</option>
-				          <option id="dn_timeout_15000" value="15000">15 seconds</option>
-				          <option id="dn_timeout_60000" value="60000">1 minute</option>
-				          <option id="dn_timeout_900000" value="900000">15 minutes</option>
-				          <option id="dn_timeout_3600000" value="3600000">1 hour</option>
-				          <option id="dn_timeout_18000000" value="18000000">5 hours</option>
-				          <option id="dn_timeout_0" value="0">Indefinitely</option>
-				      </select>
-                  <a title="This setting determines how long the desktop notification window will be visible" style="cursor: help">?</a>	
-               </fieldset>
-			   </div>
-			   <div id="content_2" class="content invisible">
-				   <h2>Account settings</h2>
-				   Polling interval:  
-				   <select id="poll">
-				       <option id="poll_15000" value="15000">15 seconds</option>
-				       <option id="poll_30000" value="30000">30 seconds</option>
-				       <option id="poll_60000" value="60000">1 minute</option>
-				       <option id="poll_300000" value="300000">5 minutes</option>
-				       <option id="poll_900000" value="900000">15 minutes</option>
-				       <option id="poll_1800000" value="1800000">30 minutes</option>
-				       <option id="poll_3600000" value="3600000">1 hour</option>
-				       <option id="poll_7200000" value="7200000">2 hours</option>
-				       <option id="poll_18000000" value="18000000">5 hours</option>
-				   </select>
-               <a title="This setting determines how often to check for new mail" style="cursor: help">?</a>	
-               <br /><br />
-				   Monitor this label:  
-				   <select id="check_label">
-				       <option id="check_label_" value="">Inbox</option>
-				       <option id="check_label_important" value="important">Important mail</option>
-				       <option id="check_label_unread" value="unread">All mail</option>
-				   </select>
-               <a title="This setting determines which label the extension will monitor for new mail" style="cursor: help">?</a>	
-               <br /><br />
-				   Open this label:  
-				   <select id="open_label">
-				       <option id="open_label_#inbox" value="#inbox">Inbox</option>
-				       <option id="open_label_#mbox" value="#mbox">Priority inbox</option>
-				       <option id="open_label_#search/l:unread" value="#search/l:unread">Unread mail</option>
-				       <option id="open_label_#all" value="#all">All mail</option>
-				   </select>
-               <a title="This setting determines where the user will be directed when clicking the inbox label or extension icon" style="cursor: help">?</a>	
-               
-               <!--<br /><input type="checkbox" id="check_all" onclick="toggleCheckBox('check_priority', this.checked)" /> <label for="check_all">Check all folders for unread mail</label> <a title="Enable this setting to check all folders, not only your inbox, for unread mail" style="cursor: help">?</a>
-				   <br /><input type="checkbox" id="check_priority" onclick="toggleCheckBox('check_all', this.checked)" /> <label for="check_priority"><strong>Check priority mail</strong></label> <a title="Enable this setting to only check for unread priority mail" style="cursor: help">?</a>
-                   <br /><input type="checkbox" id="is_default" /> <label for="is_default">This is my default account</label> <a title="Your default account will be used when clicking on mailto-links" style="cursor: help">?</a>!-->
-				   <!--<p>
-					   <span><strong>Label whitelist</strong> <a title="Add all labels here that you want to check for new mail" style="cursor: help">?</a></span>
-					   <select id="labels" multiple style="width: 100%"></select>
-					   <span style="float: right; clear: both;"><a href="javascript:add_label()" title="Add new label to whitelist">Add</a> | <a href="javascript:remove_label()" title="Remove selected label from whitelist">Remove</a></span>
-				   </p>!-->	
-				   	
-			   </div>
-			   <div id="content_3" class="content invisible">
-				   <h2>Visual settings</h2>
-               <fieldset>
-                  <legend>Preview window</legend>
-				      <input type="radio" name="preview_setting" id="preview_setting0" value="0" /> <label for="preview_setting0">Always off</label> <a title="Disables the preview popup window (not recommended) and opens the first account with unread mail" style="cursor: help">?</a>
-				      <br />
-				      <input type="radio" name="preview_setting" id="preview_setting1" value="1" /> <label for="preview_setting1">Automatic</label> <a title="Only shows the preview window when there's unread mail" style="cursor: help">?</a>
-				      <br />
-				      <input type="radio" name="preview_setting" id="preview_setting2" value="2" /> <label for="preview_setting2">Always on</label> <a title="Always shows the preview window" style="cursor: help">?</a>
-               </fieldset>
-				   <h3>Language</h3>
-				   <select id="languages"></select>
-				   <a title="Select the language of the extension" style="cursor: help">?</a>
-				   <p><a href="https://github.com/aceat64/MailCheckerMinus" title="Help translate the extension" target="_blank">Missing your language?</a></p>
+		<script src="lib/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<section id="top">
+			<div class="hbox">
+			</div>
+		</section>
+		<section id="masthead">
+			<div class="container">
+				<div id="help">
+					<a href="#help" title="Need Help?"><span class="icon-18 help"></span></a>
 				</div>
-			   <div id="content_4" class="content invisible">
-				   <h2>Icon selection settings</h2>
-				   <div id="icon_selection"></div>
-			   </div>
-		   </td>
-           </tr>
-           <tr>
-               <td>
-                   <h1 style="margin-bottom: 0"><img src="assets/img/information_big.png" alt="" />&nbsp;&nbsp;<a href="about.html" title="Go to the about page">About &raquo;</a></h1>
-               </td>
-           </tr>
-       </table>
-       <span class="left">
-       </span>
-       <button id="submit" type="submit" onclick="save_options()" style="width: 130px;height: 30px; float: right; margin-top: 4px;">Save &amp; Reload</button>
-       <button id="submit" type="submit" onclick="reset_options()" style="width: 130px;height: 30px; float: right; margin-top: 4px; margin-right:5px;">Reset to Defaults</button>
-       </form>
-   </div>
-   </body>
+				<header>
+					<img src="assets/img/icon_48.png" alt="Logo" id="logo">
+					<h1 class="title"> Notifier Plus <small>for Google Mail&trade;</small></h1>
+					<p>Extension Version <script>document.write(extVersion)</script></p>
+				</header>
+			</div>
+		</section>
+		<div id ="lower" class="container hbox">
+			<section id="menu">
+				<ul>
+					<li>
+						<a href="#general">General Settings</a>
+					</li>
+					<li>
+						<a href="#notifications">Notifications</a>
+					</li>
+					<li>
+						<a href="#account">Account Preferences</a>
+					</li>
+					<li>
+						<a href="#dropdown">Dropdown Menu</a>
+					</li>
+					<li>
+						<a href="#toolbar">Toolbar Icon</a>
+					</li>
+				</ul>
+			</section>
+			<section id="main" class="flex-1">
+				<form>
+					<div id="tab_general" class="options">
+						<h3><span class="icon-18 checkmark"></span>General Settings</h3>
+						<fieldset>
+							<legend>What should happen when you click the Archive button?</legend>
+							<label><input type="radio" name="archive_read" value="true"/>Archive the message and mark the thread as read. (Default)</label><br>
+							<label><input type="radio" name="archive_read" value="false"/>Just archive the message.</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>When you preview a message should it be marked as read?</legend>
+							<label><input type="radio" name="showfull_read" value="true"/>Yes, mark the thread as read. (Default)</label><br>
+							<label><input type="radio" name="showfull_read" value="false"/>No, just display the message. I'll mark it as read manually.</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>Where would you like to compose new messages?</legend>
+							<label><input type="radio" name="open_tabs" value="false"/>Compose messages in a popup window. (Default)</label><br>
+							<label><input type="radio" name="open_tabs" value="true"/>Compose messages in a browser tab.</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>Would you like this extension to take responsibility of email links in webpages?</legend>
+							<label><input type="radio" name="no_mailto" value="false"/>Yes, open email links in Google Mail. (Default)</label><br>
+							<label><input type="radio" name="no_mailto" value="true"/>No, open email links in my default email application.</label>
+						</fieldset>
+
+					</div>
+					<div id="tab_notifications" class="options">
+						<h3><span class="icon-18 eye"></span>Notification Preferences</h3>
+						<h4><span class="icon-18 window"></span>Visual Notification</h4>
+						<fieldset>
+							<legend>Would you like to be visually notified when a new message arrives?</legend>
+							<labeL>
+								<input type="radio" id ="show_notification" name="show_notification" value="true" onclick="requestUserPermission()" />
+								Yes, show popup notification and update unread messages. (Default)
+							</labeL><br>
+							<labeL>
+								<input type="radio" name="show_notification" value="false" />
+								No, just update the unread messages.
+							</labeL>
+						</fieldset>
+
+						<fieldset>
+							<label>
+								<legend>How long would you like notifications to stay on the screen?</legend>
+								<select name="dn_timeout">
+									<option value="3000">3 Seconds</option>
+									<option value="15000">15 Seconds (Default)</option>
+									<option value="60000">1 Minute</option>
+									<option value="900000">15 Minutes</option>
+									<option value="3600000">1 Hour</option>
+									<option value="18000000">5 Hours</option>
+									<option value="0">Indefinitely</option>
+								</select>
+							</label>
+						</fieldset>
+
+						<h4><span class="icon-18 bell"></span>Audio Notification</h4>
+						<fieldset>
+							<legend>What sound would you like to play when new mail arrives?</legend>
+							<label>
+								<input type="radio" id="sound_off_false" name="sound_off" value="false">
+								Play this sound: <br>
+								<div class="subfield">
+									<select id="sn_audio" name="sn_audio">
+										<option value="chime.mp3">Chime (Default)</option>
+										<option value="ding.ogg">Ding</option>
+										<!--<option value="custom">Custom</option>-->
+									</select>
+									<a onclick="playNotificationSound()" title="Preview Notification Sound" id="btn-pre-sx" class="icon-18 play"></a>
+									<!--<br>
+									<input type="file" id="sn_audio_src" name="sn_audio_src" accept="audio/wav, audio/x-wav, audio/mpeg, audio/vorbis, application/ogg" onchange="handleAudioFile(this.files)" />
+									<input type="hidden" id="sn_audio_enc" />-->
+								</div>
+							</label><br>
+							<label>
+								<input type="radio" name="sound_off" value="true"> 
+								Do not play a sound.
+							</label>
+						</fieldset>						
+					</div>
+					<div id="tab_account" class="options">
+						<h3><span class="icon-18 login"></span>Account Preferences</h3>
+						<fieldset>
+							<label>
+								<legend>How often would you like to check for new messages?</legend>
+								<select name="poll">
+									<option value="15000">Every 15 Seconds (Default)</option>
+									<option value="30000">Every 30 Seconds</option>
+									<option value="60000">Every Minute</option>
+									<option value="300000">Every 5 Minutes</option>
+									<option value="900000">Every 15 Minutes</option>
+									<option value="1800000">Every 30 Minutes</option>
+									<option value="3600000">Every Hour</option>
+								</select>
+							</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>Which messages should be displayed in the extension?</legend>
+							<label><input type="radio" name="check_label" value="">Unread in Inbox (Default)</label><br>
+							<label><input type="radio" name="check_label" value="important">Important and Unread</label><br>
+							<label><input type="radio" name="check_label" value="unread">All Unread Messages</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>When clicking the inbox link, what would you like to be displayed?</legend>
+							<label><input type="radio" name="open_label" value="#inbox">My Inbox (Default)</label><br>
+							<label><input type="radio" name="open_label" value="#mbox">My Priority Inbox</label><br>
+							<label><input type="radio" name="open_label" value="#search/l:unread">All Unread Messages</label><br>
+							<label><input type="radio" name="open_label" value="#all">All Mail</label>
+						</fieldset>
+
+					</div>
+					<div id="tab_dropdown" class="options">
+						<h3><span class="icon-18 paragraph_justify"></span>Dropdown Menu Settings</h3>
+						<fieldset>
+							<legend>What would you like to happen when you click the toolbar icon?</legend>
+							<label>
+								<input type="radio" name="preview_setting"value="2">
+								Display a dropdown menu containing my unread messages. (Default)
+							</label><br>
+							<label>
+								<input type="radio" name="preview_setting"value="0">
+								Go to inbox of most recent message.
+							</label><br>
+							<label>
+								<input type="radio" name="preview_setting"value="1">
+								Dropdown unless I have no new messages.
+							</label><br>
+						</fieldset>
+
+						<fieldset>
+							<label>
+								<legend>What language should the dropdown appear in?</legend>
+								<select id="languages" name="language"></select>
+							</label>
+						</fieldset>
+					</div>
+					<div id="tab_toolbar" class="options">
+						<h3><span class="icon-18 round"></span>Toolbar Icons</h3>
+						<fieldset id="icon_selection"></fieldset>
+						<fieldset>
+							<legend>Would you like the unread mail count displayed in the toolbar?</legend>
+							<label><input type="radio" name="hide_count" value="false"/>Yes, I'd like to see the number of messages. (Default)</label><br>
+							<label><input type="radio" name="hide_count" value="true"/>No, I prefer to stay in the dark about these things.</label>
+						</fieldset>
+
+						<fieldset>
+							<legend>Would you like the toolbar icon to animate when new mail arrives?</legend>
+							<label>
+								<input type="radio" name="animate_off" value="false">Yes, please shake gleefully like a three-year-old on Christmas morning. (Default)
+							</label><br>
+							<label>
+								<input type="radio" name="animate_off" value="true">No, I have no joy in my soul.
+							</label>
+						</fieldset>
+					</div>
+					<div id="tab_help">
+						<h3><span class="icon-18 help"></span>I Need Help!</h3>
+					</div>
+					<div id="tab_about">
+						<h3><span class="icon-18 directional_right"></span>About This Extension</h3>
+						<h4><span class="icon-18 lightbulb"></span>Colophon</h4>
+						<p>
+							This extension was developed using Google Chrome's&trade; Extension API in JavaScript and HTML 5. &nbsp;Contributions to this project have been made by the public via GitHub as well as the following people and groups:
+						</p>
+						<h5>Extension Creator</h5>
+						<ul>
+							<li><a href="https://github.com/brodkin/">Ryan Brodkin</a> at <a href="http://brodkinca.com/">Brodkin CyberArts</a></li>
+						</ul>
+
+						<h5>Technology and Design</h5>
+						<ul>
+							<li>Originally based on Mail Checker Plus by Anders Sahlin.</li>
+							<li>Forked from <a href="https://github.com/aceat64/MailCheckerMinus">Mail Checker Minus</a> by <a href="https://github.com/aceat64">Andrew LeCody.</a></li>
+							<li>Panel icons supplied by <a href="http://www.iconshock.com/">Icon Shock</a>.</li>
+						</ul>
+
+						<h5>Libraries</h5>
+						<ul>
+							<li>We give our life blood to <a href="http://jquery.com/">jQuery</a> for all its awesomeness.</li>
+							<li>Dates processed using Internet Timestamp Parser by Sebastiaan Deckers.</li>
+							<li>Form fields beautified by <a href="http://uniformjs.com/">Uniform</a>.</li>
+							<li>Templating enhanced with Simple JavaScript Templating by <a href="http://ejohn.org/">John Resig</a>.</li>
+						</ul>
+					</div>
+					<div id="tab_changelog">
+						<h3><span class="icon-18 clock"></span>Change Log</h3>
+						<h4> 1.3 (2011-12-1)</h4>
+						<ul>
+							<li>Forked and rebranding as Notifier Plus for Google Mail.</li>
+							<li>Brand spanking new interface that matches Google's new aesthetic.</li>
+							<li>Switched back to Local Storage since IndexedDB was over-complicating things and discouraged community contributions.</li>
+							<li>Options pages now significantly cleaner than they used to be.</li>
+							<li>Options have been rewritten to be clearer and more conversational.</li>
+							<li>Switched from Google's Basic HTML API to the much neer AJAX api.</li>
+							<li>State of starred messages is now maintained when popup is opened and closed.</li>
+							<li>Added support for Importance in popup.</li>
+							<li>Switching icons to use Google's official sprites for consistency.</li>
+							<li>Upgraded to jQuery v1.7.</li>
+							<li>Utilizing jQuery's new .on() method.</li>
+							<li>Removing support for Google Apps URLs, no longer needed with multiple sign-in.</li>
+							<li>Taking full advantage of HTML5 and CSS3 bundled into Google Chrome.</li>
+						</ul>
+						<h4> 1.2.4.9 (2011-11-15)</h4>
+						<ul>     
+							<li>Removed dead links and donation buttons.</li>
+							<li>Updated various pages to indicate that this extenion is open-source, released under the <a href="http://www.gnu.org/licenses/gpl-3.0.html" title="GPLv3">GPLv3</a>.</li>
+							<li>Modified the logo to a show minus instead of plus.</li>
+						</ul>  
+						<h4> 1.2.4.8 (2011-09-25)</h4>
+						<ul>     
+							<li>Fixed multiple account discovery</li>
+						</ul>  
+						<h4> 1.2.4.7 (2011-08-23)</h4>
+						<ul>     
+							<li>Mailto-links will now be parsed on HTTPS sites as well</li>
+							<li>Fixed a bug causing the action buttons to malfunction</li>
+						</ul>                  
+						<h4> 1.2.4.6 (2011-06-14)</h4>
+						<ul>     
+							<li>Fixed an issue with GAFYD account management on the options page (they can now be deleted properly again)</li>
+						</ul>    
+						<h4> 1.2.4.5 (2011-04-30)</h4>
+						<ul>     
+							<li>Fixed an issue with browser action icon rendering and animation</li>
+						</ul>       
+						<h4> 1.2.4.4 (2011-04-26)</h4>
+						<ul>     
+							<li>Added a loading animation on the popup page when the extension is waiting for an outgoing request</li>
+							<li>Client storage backend rewritten (bye LocalStorage, hello <a href="https://developer.mozilla.org/en/IndexedDB">IndexedDB</a>). <br />You will have to re-enter any custom settings, <strong>sorry</strong>!</li>
+							<li>New icon set, OSX (thanks to Marijn van der Werf)</li>
+						</ul>  
+						<h4> 1.2.4.2 (2011-04-21)</h4>
+						<ul>     
+							<li>Added experimental one-way label support</li>
+						</ul>  
+						<h4> 1.2.4.1 (2011-04-16)</h4>
+						<ul>     
+							<!--<li>The account with the most recent unread item will now always be on top</li>-->
+							<li>Using actions in the preview window will show the next (or previous) unread mail instead of returning to compact mode</li>
+							<li>Update alerts regarding the extension will be displayed in a notification instead of in a new tab</li>
+						</ul>           
+						<h4> 1.2.4.0 (2011-04-14)</h4>
+						<ul>     
+							<li>Added previous- and next-links in expanded preview window to easily navigate between unread mail</li>
+						</ul>
+					</div>
+					<div id="tab_develop">
+						<h3><span class="icon-18 group"></span>Information for Developers</h3>
+						<h4><span class="icon-18 circle"></span>Fork This on GitHub</h4>
+
+						<h4><span class="icon-18 game_control"></span>Developer Tools</h4>
+						<button id="submit" type="submit" onclick="reloadSettings()">Reload Extension</button>
+						<button id="submit" type="submit" onclick="reset_options()">Restore Default Settings</button>
+						<button id="submit" type="submit" onclick="backgroundPage.notify()">Test Notification</button>
+					</div>
+					<div class="options_header">
+						<h2>Options and Settings</h2>
+						<p class="intro">Your settings will automatically be applied when navigating away from this panel.</p>
+					</div>
+				</form>
+			</section>
+		</div>
+		<footer>
+			<div class="container hbox">
+				<div>
+					<a href="http://brodkinca.com/"><img src="assets/img/logo_bca.png" alt="Brodkin CyberArts"></a>
+				</div>
+				<div class="flex-1">
+					<p>
+						<a href="http://brodkinca.com/">Homepage</a> - <a href="#about">About</a> - <a href="#changelog">Change Log</a> - <a href="#develop">Developers</a>
+					</p>
+					<p>
+						Notifier for Google Mail&trade; Copyright &copy; <script>var theDate=new Date(); document.write(theDate.getFullYear());</script> Brodkin CyberArts.  
+						All rights reserved.
+					</p>
+					<p>
+						Google Mail&trade; is a trademark of Google Inc. Use of this trademark is subject to Google Permissions.
+					</p>
+				</div>
+			</div>
+		</footer>
+	</body>
 </html>

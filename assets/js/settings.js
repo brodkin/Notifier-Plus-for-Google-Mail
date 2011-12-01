@@ -3,24 +3,23 @@
    var prefix = 'mailchecker_';
 
    var defaults = {
-      "poll": 15000,
-      "dn_timeout": 15000,
-      "language": "en",
-      "sn_audio": "chime.mp3",
+      "animate_off": 'false',
+      "archive_read": 'true',
+      "check_gmail_off": 'false',
       "check_label": "",
-      "open_label": "#inbox",
+      "dn_timeout": 15000,
+      "hide_count": 'false',
       "icon_set": "set1",
+      "language": "en",
+      "no_mailto": 'false',
+      "open_label": "#inbox",
+      "open_tabs": 'false',
+      "poll": 15000,
       "preview_setting": 2,
-      "show_notification": true,
-      "check_gmail_off": false,
-      "hide_count": false,
-      "sound_off": false,
-      "show_notification": true,
-      "showfull_read": false,
-      "animate_off": false,
-      "open_tabs": false,
-      "no_mailto": false,
-      "archive_read": true,
+      "show_notification": 'true',
+      "showfull_read": 'true',
+      "sn_audio": "chime.mp3",
+      "sound_off": 'false'
    };
 
    Settings.reset = function () {

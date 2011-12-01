@@ -1,85 +1,47 @@
 var backgroundPage = chrome.extension.getBackgroundPage();
 var Settings = backgroundPage.getSettings();
-
-$(restore_options);
-
-var boolIdArray = new Array("hide_count",
-                            "showfull_read",
-                            "open_tabs",
-                            "archive_read",
-                            "no_mailto",
-                            "sound_off",
-                            "animate_off", 
-                            "show_notification");
+var extVersion = chrome.app.getDetails().version;
+var hash; 
 
 function reset_options() {
     Settings.reset();
     backgroundPage.reloadSettings();
 }
 
-function save_options() {
-   for (var i in boolIdArray) {
-      var id = boolIdArray[i];
-      var element = document.getElementById(id);
-      var value = element.checked;
-      Settings.store(id, value);
+function checkHash(){
+    if (window.location.hash == '') {
+        processHash('#general');
+    } else if (window.location.hash != hash) { 
+        hash = window.location.hash; 
+        processHash(hash); 
+    } t=setTimeout("checkHash()",200); 
+}
 
-      console.log("saved: " + id + " as " + value);
-   }
+function processHash(hash){
+  // Hide All Sections and Show Requested
+  $('[id^="tab"]').hide();
+  $('#tab_' + hash.substring(1)).show();
 
-   var iconRadios = document.forms[0].icon_set;
-   for (var i in iconRadios) {
-      if (iconRadios[i].checked) {
-         Settings.store("icon_set", iconRadios[i].value);
-         break;
-      }
-   }
-
-   var previewRadios = document.forms[0].preview_setting;
-   for (var i in previewRadios) {
-      if (previewRadios[i].checked) {
-         Settings.store("preview_setting", Number(previewRadios[i].value));
-         break;
-      }
-   }
-
-   Settings.store("poll", parseInt(document.getElementById("poll").value));
-   Settings.store("dn_timeout", parseInt(document.getElementById("dn_timeout").value));
-   Settings.store("language", document.getElementById("languages").value);
-   Settings.store("check_label", document.getElementById("check_label").value);
-   Settings.store("open_label", document.getElementById("open_label").value);
-
-   Settings.store("sn_audio", document.getElementById("sn_audio").value);
-   if (Settings.read("sn_audio") == "custom") {
-	   try {
-	      Settings.store("sn_audio_raw", document.getElementById("sn_audio_enc").value);
-	   } catch (e) {
-	      console.error(e);
-		   alert("Could not save notification sound in storage. Please select a smaller audio file!");   
-	   }
-   } else {
-      Settings.store("sn_audio_raw", null);
-   }
-
-   backgroundPage.reloadSettings();
+  // Deactivate All Menu Items and Reactivate Clicked
+  $('#menu a').each(function () {
+      var menuItem = $(this);
+      menuItem.removeClass('active');
+      if (menuItem.attr('href') == hash) menuItem.addClass('active');
+  });
 }
 
 // Restores input states to saved values from stored settings.
 function restore_options() {
-   showContent(0);
 
-   for (var i in boolIdArray) {
-      var id = boolIdArray[i];
-      var value = Settings.read(id);
+   // Restore Form Field Values
+   $('#main [name]').each(function () {
+     var field = $(this);
+     var name = field.attr('name');
+     var value = Settings.read(name);
+     field.val([value]);
+   });
 
-      if (value === true) {
-         var element = document.getElementById(id);
-         element.checked = true;
-      }
-
-      console.log("restored: " + id + " as " + value);
-   }
-
+   // Icon Sets
    spawnIconRow("set1", "Default");
    spawnIconRow("set2", "Default Grey");
    spawnIconRow("set3", "Default White");
@@ -115,11 +77,7 @@ function restore_options() {
       }
    }
 
-   document.getElementById("poll_" + Settings.read("poll")).selected = true;
-   document.getElementById("dn_timeout_" + Settings.read("dn_timeout")).selected = true;
-   document.getElementById("check_label_" + Settings.read("check_label")).selected = true;
-   document.getElementById("open_label_" + Settings.read("open_label")).selected = true;
-
+   // Populate Languages
    var langSel = document.getElementById("languages");
    for (var i in languages) {
       langSel.add(new Option(languages[i].what, languages[i].id), languages[i].id);
@@ -127,43 +85,13 @@ function restore_options() {
    langSel.value = Settings.read("language");
    sortlist(langSel);
 
-   $('#sn_audio').val(Settings.read("sn_audio"));
-   $('#sn_audio_enc').val(Settings.read("sn_audio_raw"));
-   
-   $('#sn_audio').change(function () {
-      if (this.value == "custom") {
-         $('#sn_audio_src').show();
-      } else {
-         $('#sn_audio_src').hide();
-      }
-   });
+   // Load Raw Audio
+   //$('#sn_audio_enc').val(Settings.read("sn_audio_raw"));
 
+   // Hide Upload Field Unless Custom Selected
    if (Settings.read("sn_audio") != "custom") {
       $('#sn_audio_src').hide();
    }
-}
-
-function loadLabels(labels) {
-    $(labels).each(function (i) {
-        $("#labels")[0].add(new Option(labels[i]));
-    });
-}
-
-function showContent(contentId) {
-    $('.content').each(function (index) {
-        if (!($(this).hasClass('invisible')))
-            $(this).addClass('invisible');
-
-        if (index == contentId)
-            $(this).removeClass('invisible');
-    });
-
-    $('ul.menu > li > a').each(function (index) {
-        $(this).removeClass('active');
-
-        if (index == contentId)
-            $(this).addClass('active');
-    });
 }
 
 function spawnIconRow(value, description) {
@@ -171,53 +99,18 @@ function spawnIconRow(value, description) {
     selectionElement.innerHTML += '<span><input type="radio" name="icon_set" value="' + value + '" id="icon_set' + value + '" /><label for="icon_set' + value + '"><img src="icons/' + value + '/not_logged_in.png" /><img src="icons/' + value + '/no_new.png" /><img src="icons/' + value + '/new.png" /> <small>' + description + '</small></span></label><br />';
 }
 
-function add_label() {
-    var newlabel = prompt("Enter the name of the label." +
-    "\n\nDo not enter anything but the label name!");
-
-    if (newlabel != null && newlabel != "" && newlabel != "yourdomain.com") {
-        //accounts.push({"label":newlabel}); 
-
-        var labels_sel = document.getElementById("labels");
-        labels_sel.add(new Option(newlabel), null);
-        labels_sel.size = accounts.length + 1;
-    }
-}
-
-function remove_label() {
-    var labels_sel = document.getElementById("labels");
-    var label_todel;
-
-    if (labels_sel.selectedIndex > -1 && labels_sel.options[labels_sel.selectedIndex] != null) {
-        label_todel = labels_sel.options[labels_sel.selectedIndex];
-
-        for (var i in accounts) {
-            if (accounts[i].domain == label_todel.text) {
-                console.log("removing account: " + accounts[i].domain);
-                accounts.splice(i, 1);
-                break;
-            }
-        }
-        labels_sel.remove(labels_sel.selectedIndex);
-        labels_sel.size = accounts.length + 1;
-    }
-}
-
 function requestUserPermission() {
     try {
-        var checkboxUserPermission = document.getElementById('show_notification');
-        if (checkboxUserPermission.checked) {
+        var radio = $('#show_notification');
             if (checkUserPermission())
                 return;
 
             if (typeof webkitNotifications != "undefined") {
                 webkitNotifications.requestPermission(function () {
                     var permissionGranted = checkUserPermission();
-                    checkboxUserPermission.checked = permissionGranted;
                 });
             }
-        }
-    } catch (e) { checkboxUserPermission.checked = false; }
+    } catch (e) { radio.val(false); }
 }
 
 function checkUserPermission() {
@@ -225,13 +118,6 @@ function checkUserPermission() {
         return (webkitNotifications.checkPermission() == 0);
     } catch (e) { return false; }
   }
-
-
-function toggleCheckBox(checkboxId, checked) {
-   if (checked) {
-      document.getElementById(checkboxId).checked = !checked;
-   }
-}
 
 function handleAudioFile(fileList) {
    var file = fileList[0];
@@ -273,13 +159,7 @@ function handleAudioFile(fileList) {
             alert("An error occured while reading the file!");
             break;
       }
-	  
-	  $('#submit').val('Save &amp; Reload');
-	  $('#submit').removeAttr('disabled');
    }
-
-   $('#submit').val('Processing...');
-   $('#submit').attr('disabled', 'disabled');
    
    fileReader.readAsDataURL(file);
 }
@@ -305,3 +185,31 @@ function playNotificationSound() {
       console.error(e);
    }
 }
+
+$(function() {
+  restore_options();
+  checkHash();
+
+  $('.options_header').prependTo('.options');
+
+  $("select, input:checkbox, input:radio, input:file").uniform().change(function () {
+    var selector = $(this);
+    Settings.store(selector.attr('name'), selector.val());
+
+    if (selector.attr('name') == 'sn_audio') {
+      $('#sound_off_false').click();
+      playNotificationSound();
+
+      if (selector.val() == "custom") {
+         $('#sn_audio_src').show();
+      } else {
+         $('#sn_audio_src').hide();
+      }
+    }
+  });
+
+  $(window).unload(function() {
+    backgroundPage.reloadSettings();
+  });
+
+});

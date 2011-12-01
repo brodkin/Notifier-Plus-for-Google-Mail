@@ -135,7 +135,7 @@ function reloadSettings() {
       "Click to view the change log.";
 
       showNotification(updateTitle, updateMessage, function () {
-         chrome.tabs.create({ url: "about.html" });
+         chrome.tabs.create({ url: "options.html#changelog" });
       });
    }
 

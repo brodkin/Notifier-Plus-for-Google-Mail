@@ -1,8 +1,6 @@
 var backgroundPage = chrome.extension.getBackgroundPage();
 var Settings = backgroundPage.getSettings();
 var mailAccounts = backgroundPage.accounts;
-
-//var mailArray = mailAccount.getMail();
 var mailCount = 0;
 var mailCache = new Array();
 var allMailMap;
@@ -10,26 +8,20 @@ var allMailArray;
 var scrollbar;
 var unreadCount = 0;
 
+// Google Analytics Tracking Code
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-27460318-2']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+ var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ ga.src = 'https://ssl.google-analytics.com/ga.js';
+ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
 $.each(mailAccounts, function (i, account) {
    unreadCount += account.getUnreadCount();
 });
-
-//// Sort new mail by date
-//mailAccounts.sort(function (a, b) {
-//   var aNewest = a.getNewestMail();
-//   var bNewest = b.getNewestMail();
-
-//   if(bNewest == null)
-//      return -1;
-//   if(aNewest == null)
-//      return 1;
-
-//   if (aNewest.issued > bNewest.issued)
-//      return -1;
-//   if (bNewest.issued > aNewest.issued)
-//      return 1;
-//   return 0;
-//});
 
 var previewSetting = Settings.read("preview_setting");
 

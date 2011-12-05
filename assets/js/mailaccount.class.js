@@ -470,10 +470,12 @@ function MailAccount(settingsObj) {
                } else if (tab.url.indexOf(mailURL.replace("https:", "http:")) >= 0) {
                   chrome.tabs.update(tab.id, { selected: true });
                   return;
+               } else {
+                  chrome.tabs.create({ url: mailURL + inboxLabel });
+                  return; // Required as of 17.0.958.0 canary
                }
             }
          }
-         chrome.tabs.create({ url: mailURL + inboxLabel });
       });
    }
 

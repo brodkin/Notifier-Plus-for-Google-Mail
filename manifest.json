@@ -2,8 +2,8 @@
    "background_page": "background.html",
    "browser_action": {
       "default_icon": "icons/set1/not_logged_in.png",
-      "default_title": "Mail Checker Minus",
-      "name": "Mail Checker Minus",
+      "default_title": "Notifier Plus for Google Mail™",
+      "name": "Notifier Plus for Google Mail™",
       "popup": {
          "path": "popup.html"
       }
@@ -19,7 +19,7 @@
         "48": "assets/img/icon_48.png",
         "128": "assets/img/icon_128.png"
    },
-   "name": "Notifier Plus for Google Mail",
+   "name": "Notifier Plus for Google Mail™",
    "options_page": "options.html",
    "permissions": [ 
       "background",

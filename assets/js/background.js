@@ -137,13 +137,14 @@ function reloadSettings() {
    setIcon(img_notLoggedInSrc);
    
    var storedVersion = Settings.read("version");
-   if (storedVersion == null || storedVersion != VERSION) {
-      Settings.store("version", VERSION);
+   var extensionVersion = chrome.app.getDetails().version;
+   if (storedVersion == null || storedVersion != extensionVersion) {
+      Settings.store("version", extensionVersion);
 
       var updateTitle = "New version installed";
-      var updateMessage = "The extension has been updated to the latest version (" + VERSION + ")." +
+      var updateMessage = "The extension has been updated to the latest version (" + extensionVersion + ")." +
       "<br />" + "<br />" +
-      "Click to view the change log.";
+      "Click to view what's new!";
 
       showNotification(updateTitle, updateMessage, function () {
          chrome.tabs.create({ url: "options.html#changelog" });

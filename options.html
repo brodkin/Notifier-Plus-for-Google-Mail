@@ -217,12 +217,53 @@
 					</div>
 					<div id="tab_help">
 						<h3><span class="icon-18 help"></span>I Need Help!</h3>
+						<p class="intro">
+							Something broken?  Can't get this thing installed correctly?  You'll probably find the answer here.
+						</p>
+
+						<h4>How do I add my accounts?</h4>
+						<p>
+							All you have to do is sign-in to your Google or Google Apps account!
+						</p>
+						<p>
+							Want to check mail in more than one account?  <a href="http://support.google.com/accounts/bin/answer.py?hl=en&answer=181599">Google's multiple sign-in feature</a> will allow you to remained signed in to a maximum of 10 accounts at one time.  Just click on your account name on most Google pages, including Gmail, and select &quot;switch account&quot;.
+						</p>
+						<p>
+							Once you've signed in to a Google account, the extension will reload and display mail from each of the accounts to which you've signed in.
+						</p>
+						<p>
+							<em><strong>NOTE:</strong> You must first enable multiple sign-in <a href="https://accounts.google.com/b/0/MultipleSessions">here</a> before you can use more than one account with this extension.</em>
+						</p>
+
+						<h4>I have this awesome idea for a new feature!</h4>
+						<p>
+							Great! You should <a href="https://github.com/brodkin/Notifier-Plus-for-Google-Mail/issues">open a new issue</a> describing how your feature would work and why you think it would improve this extension.
+						</p>
+						<p>
+							<em>Want to do one better?  Write the feature yourself and submit a pull request on <a href="https://github.com/">GitHub</a>.</em>
+						</p>
+
+						<h4>I've tried everything, and I still can't make it work!</h4>
+						<p>
+							When push comes to shove sometimes you just have to start over...
+						</p>
+						<button id="submit" type="submit" onclick="reset_options()">Clear My Settings and Restore Defaults</button>
+
+						<h4>That didn't work either, I think I've found a bug!</h4>
+						<p>
+							We're sorry that we couldn't offer instant gratification, but we'd like to fix your problem anyway.  Please <a href="https://github.com/brodkin/Notifier-Plus-for-Google-Mail/issues">open a new issue</a> with all of the following information:
+						</p>
+						<ol>
+							<li>Description of the issue.</li>
+							<li>Detailed steps to reproduce the issue.</li>
+							<li>Any error messages that you encounter.</li>
+						</ol>
 					</div>
 					<div id="tab_about">
 						<h3><span class="icon-18 directional_right"></span>About This Extension</h3>
 						<h4><span class="icon-18 lightbulb"></span>Colophon</h4>
 						<p>
-							This extension was developed using Google Chrome's&trade; Extension API in JavaScript and HTML 5. &nbsp;Contributions to this project have been made by the public via GitHub as well as the following people and groups:
+							This extension was developed using Google Chrome's&trade; Extension API in JavaScript and HTML 5. &nbsp;Contributions to this project have been made by the public via <a href="https://github.com/brodkin/Notifier-Plus-for-Google-Mail">GitHub</a> as well as the following people and groups:
 						</p>
 						<h5>Extension Creator</h5>
 						<ul>
@@ -327,7 +368,13 @@
 					</div>
 					<div id="tab_develop">
 						<h3><span class="icon-18 group"></span>Information for Developers</h3>
-						<h4><span class="icon-18 circle"></span>Fork This on GitHub</h4>
+						<h4><span class="icon-18 usb"></span>Fork This on GitHub</h4>
+						<p>
+							This Chrome extension is open source and can be found on <a href="https://github.com/brodkin/Notifier-Plus-for-Google-Mail">GitHub</a>.  Developers contributing to the project should ensure that all changes are well-commented, features are documented in the <a href="#changelog">Change Log</a>, and that the code conforms to common web standards and the <a href="http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml">Google JavaScript Style Guide</a>.  Pull requests not conforming to these requirements may be rejected.
+						</p>
+						<p>
+							<em><strong>NOTE:</strong> Much of the code adapted from other projects does not currently conform to these standards.  Developers are strongly encouraged to work towards bringing this code into compliance.</em>
+						</p>
 
 						<h4><span class="icon-18 game_control"></span>Developer Tools</h4>
 						<button id="submit" type="submit" onclick="reloadSettings()">Reload Extension</button>
@@ -348,7 +395,11 @@
 				</div>
 				<div class="flex-1">
 					<p>
-						<a href="http://brodkinca.com/">Homepage</a> - <a href="#about">About</a> - <a href="#changelog">Change Log</a> - <a href="#develop">Developers</a>
+						<a href="http://brodkinca.com/">Homepage</a> - 
+						<a href="#about">About</a> - 
+						<a href="#help">Help</a> - 
+						<a href="#changelog">Change Log</a> - 
+						<a href="#develop">Developers</a>
 					</p>
 					<p>
 						Notifier Plus for Google Mail&trade; Copyright &copy; <script>var theDate=new Date(); document.write(theDate.getFullYear());</script> Brodkin CyberArts.  

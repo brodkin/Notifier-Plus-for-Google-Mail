@@ -157,15 +157,15 @@ section#main {
 	margin-bottom: 5px;
 }
 
-section#main ul {
+section#main ul, section#main ol {
 	margin-top: 5px;
 	margin-bottom: 10px;
+	margin-left: 18px;
 }
 
 section#main ul li {
 	list-style-type: square;
 	list-style-position: outside;
-	margin-left: 18px;
 }
 
 section#main h2 {
@@ -190,6 +190,7 @@ section#main h4 {
 	font-size: 1.15em;
 	margin-bottom: 7px;
 	color: #797979;
+	margin-top: 10px;
 }
 
 section#main h4 span {
@@ -205,6 +206,12 @@ section#main h5 {
 section#main p {
 	margin-top: 5px;
 	margin-bottom: 5px;
+	line-height: 1.7;
+}
+
+section#main a[href ^="http"] {
+	padding-right: 15px;
+	background: url(../img/arrow_hyperlink.png) no-repeat right center;
 }
 
 section#main .intro {

@@ -848,7 +848,7 @@ function MailAccount(settingsObj) {
       }
    }
 
-   // Called when the user updates a tab
+   // Update Feed if Page Load is Gmail
    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       if (changeInfo.status == 'loading' && (tab.url.indexOf(mailURL) == 0 || tab.url.indexOf(mailURL.replace("http:", "https:")) == 0 || tab.url.indexOf(mailURL.replace("https:", "http:")) == 0)) {
          logToConsole("saw gmail! updating...");

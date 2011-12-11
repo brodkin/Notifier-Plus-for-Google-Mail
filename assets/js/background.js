@@ -20,6 +20,18 @@ var animDelay = 10;
 
 var audioElement = new Audio();
 
+// Listen for changes in session
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+   var auth_host = 'accounts.google.com';
+   var hostname = tab.url.match(/:\/\/(.[^/]+)/)[1];
+
+   if (hostname != auth_host && Settings.read('tab_hostname') == auth_host) {
+      reloadSettings();
+   }
+
+   Settings.store('tab_hostname', hostname)
+});
+
 // Google Analytics Tracking Code
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-27460318-2']);
@@ -63,6 +75,8 @@ function stopAnimateLoop() {
 }
 
 function doAnimate() {
+   gfx.src = "icons/" + iconSet + "/new" + iconFormat;
+
    canvasContext.save();
    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
    canvasContext.translate(Math.ceil(canvas.width / 2), Math.ceil(canvas.height / 2));

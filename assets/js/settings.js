@@ -5,7 +5,6 @@
    var defaults = {
       "animate_off": 'false',
       "archive_read": 'true',
-      "check_gmail_off": 'false',
       "check_label": "",
       "dn_timeout": 15000,
       "hide_count": 'false',

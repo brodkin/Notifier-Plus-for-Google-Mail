@@ -120,8 +120,10 @@
 								Play this sound: <br>
 								<div class="subfield">
 									<select id="sn_audio" name="sn_audio">
-										<option value="chime.mp3">Chime (Default)</option>
-										<option value="ding.ogg">Ding</option>
+										<option value="notify_google1.mp3">Google Beep 1 (Default)</option>
+										<option value="notify_google2.mp3">Google Beep 2</option>
+										<option value="notify_chime.mp3">Chime</option>
+										<option value="notify_ding.ogg">Ding</option>
 										<!--<option value="custom">Custom</option>-->
 									</select>
 									<a onclick="playNotificationSound()" title="Preview Notification Sound" id="btn-pre-sx" class="icon-18 play"></a>
@@ -244,13 +246,14 @@
 					</div>
 					<div id="tab_changelog">
 						<h3><span class="icon-18 clock"></span>Change Log</h3>
-						<h4> 1.3.3 (2011-12-10)</h4>
+						<h4> 1.3.3 (2011-12-11)</h4>
 						<ul>
 							<li>Changes in the session will now be autodetected.</li>
 							<li>Adjusting description to include newly added features.</li>
 							<li>Fixed issue in which plugin would fail to load on initial install.</li>
 							<li>Removed check to see if regular Gmail checking is disabled.</li>
 							<li>Adjusted manifest to use newer keys.</li>
+							<li>New audio notifications added.</li>
 						</ul>
 						<h4> 1.3.2 (2011-12-10)</h4>
 						<ul>

@@ -17,7 +17,7 @@
       "preview_setting": 2,
       "show_notification": 'true',
       "showfull_read": 'true',
-      "sn_audio": "chime.mp3",
+      "sn_audio": "notify_google1.mp3",
       "sound_off": 'false'
    };
 

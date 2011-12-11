@@ -351,7 +351,11 @@ function hideMail(accountId, mailid, stayOpen) {
          window.close();
 	  }
    } else {
-      accountElement.find('.unreadCount').text(unreadCount);
+      if (unreadCount >= 20) {
+         accountElement.find('.unreadCount').text(unreadCount + "+");
+      } else {
+         accountElement.find('.unreadCount').text(unreadCount);
+      }
    }
 }
 

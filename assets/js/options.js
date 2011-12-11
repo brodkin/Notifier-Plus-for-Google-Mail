@@ -190,7 +190,7 @@ function playNotificationSound() {
 
    try {
       var audioElement = new Audio();
-      audioElement.src = source;
+      audioElement.src = "assets/audio/" + source;
       audioElement.play();
    } catch (e) {
       console.error(e);

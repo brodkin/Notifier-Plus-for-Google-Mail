@@ -319,7 +319,7 @@ function playSound() {
    }
 
    try {
-      audioElement.src = source;
+      audioElement.src = "assets/audio/" + source;
       audioElement.load();
       audioElement.play();
    } catch (e) {

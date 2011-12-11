@@ -1,6 +1,6 @@
 ﻿{
    "name": "Notifier Plus for Google Mail™",
-   "description": "Displays your unread Gmail and Google Apps messages while allowing you to preview, star, trash, archive and mark as spam all in one place!",
+   "description": "Notifies you of unread Gmail and Google Apps messages. Preview, star, trash, archive and mark as spam all in one place!",
    "background_page": "background.html",
    "browser_action": {
       "default_icon": "assets/img/icon_sets/set1/not_logged_in.png",

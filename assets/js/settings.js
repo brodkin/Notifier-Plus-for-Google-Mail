@@ -1,6 +1,6 @@
 ﻿var Settings = function() {
 
-   var prefix = 'mailchecker_';
+   var prefix = 'brodkinca_notifier_';
 
    var defaults = {
       "animate_off": 'false',

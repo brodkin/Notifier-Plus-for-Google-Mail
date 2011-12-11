@@ -144,7 +144,7 @@ function reloadSettings() {
       var updateTitle = "New version installed";
       var updateMessage = "The extension has been updated to the latest version (" + extensionVersion + ")." +
       "<br />" + "<br />" +
-      "Click to view what's new!";
+      "Click here to view what's new!";
 
       showNotification(updateTitle, updateMessage, function () {
          chrome.tabs.create({ url: "options.html#changelog" });
@@ -164,61 +164,44 @@ function reloadSettings() {
    chrome.browserAction.setBadgeText({ text: "..." });
    chrome.browserAction.setTitle({ title: "Polling accounts..." });
 
-   if (Settings.read("check_gmail_off") === false) {
-      // Check if user has enabled multiple sessions
-      $.ajax({
-         url: "https://www.google.com/accounts/AddSession",
-         timeout: 10000,
-         success: function (data) {
-            // Multiple accounts active
-            var matches = data.match(/([\S]+?@[\S]+)/ig);
-            //console.log(matches);
+   // Detect Accounts from Multiple Sign-in
+   $.ajax({
+      url: "https://www.google.com/accounts/AddSession",
+      timeout: 10000,
+      success: function (data) {
+         // Multiple accounts active
+         var matches = data.match(/([\S]+?@[\S]+)/ig);
+         //console.log(matches);
 
-            if (matches != null && matches.length > 0) {
-               for (var n = 0; n < matches.length; n++) {
-                  var acc = new MailAccount({ accountNr: n });
-                  acc.onError = mailError;
-                  acc.onUpdate = mailUpdate;
-                  accounts.push(acc);
-               }
-            }
-
-            reloadSettings_complete();
-         },
-         error: function (objRequest) { },
-         complete: function () {
-            if (accounts.length == 0) {
-               // No multiple accounts - just check default Gmail
-               var acc = new MailAccount({});
+         if (matches != null && matches.length > 0) {
+            for (var n = 0; n < matches.length; n++) {
+               var acc = new MailAccount({ accountNr: n });
                acc.onError = mailError;
                acc.onUpdate = mailUpdate;
                accounts.push(acc);
-               reloadSettings_complete();
             }
          }
-      });
-   } else {
-      reloadSettings_complete();
-   }
+
+         reloadSettings_complete();
+      },
+      error: function (objRequest) { },
+      complete: function () {
+         if (accounts.length == 0) {
+            // No multiple accounts - just check default Gmail
+            var acc = new MailAccount({});
+            acc.onError = mailError;
+            acc.onUpdate = mailUpdate;
+            accounts.push(acc);
+            reloadSettings_complete();
+         }
+      }
+   });
+
 }
 
 function reloadSettings_complete() {
-   if (Settings.read("accounts") != null) {
-      var savedAccounts = Settings.read("accounts");
-      $.each(savedAccounts, function (i, savedAccount) {
-         if (savedAccount.domain == null)
-            return;
-
-         var acc = new MailAccount({ domain: savedAccount.domain });
-         acc.onError = mailError;
-         acc.onUpdate = mailUpdate;
-         accounts.push(acc);
-      });
-   }
-
-   //console.log(accounts.length);
    stopAnimateLoop();
-   gfx.src = "icons/" + iconSet + "/new" + iconFormat;
+   setIcon('not_logged_in');
 
    // Start request loop
    window.setTimeout(startRequest, 0);

@@ -120,10 +120,27 @@
 								Play this sound: <br>
 								<div class="subfield">
 									<select id="sn_audio" name="sn_audio">
-										<option value="notify_google1.mp3">Google Beep 1 (Default)</option>
-										<option value="notify_google2.mp3">Google Beep 2</option>
-										<option value="notify_chime.mp3">Chime</option>
-										<option value="notify_ding.ogg">Ding</option>
+										<optgroup label="Instruments and Bells">
+											<option value="notify_bongos.mp3">Bongos</option>
+											<option value="notify_chime.mp3">Chime</option>
+											<option value="notify_ding.ogg">Ding</option>
+											<option value="notify_google1.mp3">Google Beep 1 (Default)</option>
+											<option value="notify_google2.mp3">Google Beep 2</option>
+											<option value="notify_xylophone_shake.mp3">Xylophone Shake</option>
+											<option value="notify_xylophone_gliss.mp3">Xylophone Gliss</option>
+										</optgroup>
+										<optgroup label="Sound Effects">
+											<option value="notify_bicycle_bell.mp3">Bicycle Bell</option>
+											<option value="notify_boing.mp3">Boing</option>
+											<option value="notify_buzzer.mp3">Buzzer</option>
+											<option value="notify_purr.mp3">Purr</option>
+											<option value="notify_spring.mp3">Spring</option>
+											<option value="notify_toy_horn.mp3">Toy Horn</option>
+										</optgroup>
+										<optgroup label="Vocal">
+											<option value="notify_attention.mp3">Attention</option>
+											<option value="notify_belch.mp3">Belch</option>
+										</optgroup>
 										<!--<option value="custom">Custom</option>-->
 									</select>
 									<a onclick="playNotificationSound()" title="Preview Notification Sound" id="btn-pre-sx" class="icon-18 play"></a>

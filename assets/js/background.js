@@ -75,7 +75,7 @@ function stopAnimateLoop() {
 }
 
 function doAnimate() {
-   gfx.src = "icons/" + iconSet + "/new" + iconFormat;
+   gfx.src = "assets/img/icon_sets/" + iconSet + "/new" + iconFormat;
 
    canvasContext.save();
    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
@@ -225,7 +225,7 @@ function reloadSettings_complete() {
 var currentIcon;
 function setIcon(iconName) {
    currentIcon = iconName;
-   var iconPath = "icons/" + iconSet + "/" + iconName + iconFormat;
+   var iconPath = "assets/img/icon_sets/" + iconSet + "/" + iconName + iconFormat;
    try {
       chrome.browserAction.setIcon({ path: iconPath });
    } catch (e) {

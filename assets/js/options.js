@@ -107,7 +107,7 @@ function restore_options() {
 
 function spawnIconRow(value, description) {
     var selectionElement = document.getElementById("icon_selection");
-    selectionElement.innerHTML += '<span><input type="radio" name="icon_set" value="' + value + '" id="icon_set' + value + '" /><label for="icon_set' + value + '"><img src="icons/' + value + '/not_logged_in.png" /><img src="icons/' + value + '/no_new.png" /><img src="icons/' + value + '/new.png" /> <small>' + description + '</small></span></label><br />';
+    selectionElement.innerHTML += '<span><input type="radio" name="icon_set" value="' + value + '" id="icon_set' + value + '" /><label for="icon_set' + value + '"><img src="assets/img/icon_sets/' + value + '/not_logged_in.png" /><img src="assets/img/icon_sets/' + value + '/no_new.png" /><img src="assets/img/icon_sets/' + value + '/new.png" /> <small>' + description + '</small></span></label><br />';
 }
 
 function requestUserPermission() {

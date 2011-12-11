@@ -1,30 +1,21 @@
-Mail Checker Minus
-==================
+Notifier Plus for Google Mail™
+==============================
 The fast way to inbox zero, because that's a thing now.
-
-(This is a fork of Anders Sahlin's "Mail Checker Plus for Google Mail™")
 
 Features:
 ---------
 * Mail preview window, read mail without leaving the current tab
-* Delete, archive, spam, star and mark as read functionality
+* Delete, archive, and mark as spam functionality
+* Star messages and see which messages are starred
+* View importance of messages and change with one click
 * Desktop and sound notifications when new mail arrives
-* Support for multiple Google and Google Apps accounts
+* Zero-config for multiple Google and Google Apps accounts
 * Mailto-links open in your Gmail or Google Apps Mail account
 * Monitor all your labels or priority inbox
 * Translated to over 60 languages!
 * More than 10 different icon sets, choose your favorite!
 
-This claim is currently being verified, but according to the original author:
-
-This extension requires elevated permissions because of the content script that parses mailto-links. It does NOT in ANY WAY monitor private data in your browser!
-
 This extension is in no way affiliated with Google.
-
-Copyright:
-----------
-* Copyright Andrew LeCody 2011
-* Original Copyright [Anders Sahlin](mailto:malakeen@gmail.com) 2011
 
 License:
 --------
@@ -42,3 +33,5 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see: http://www.gnu.org/licenses/
+
+Copyright Brodkin CyberArts

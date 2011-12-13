@@ -18,6 +18,8 @@ var animTimer;
 var loopTimer;
 var animDelay = 10;
 
+var tabHostname;
+
 var audioElement = new Audio();
 
 // Listen for changes in session
@@ -25,11 +27,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
    var auth_host = 'accounts.google.com';
    var hostname = tab.url.match(/:\/\/(.[^/]+)/)[1];
 
-   if (hostname != auth_host && Settings.read('tab_hostname') == auth_host) {
+   if (hostname != auth_host && tabHostname == auth_host) {
       reloadSettings();
    }
 
-   Settings.store('tab_hostname', hostname)
+   tabHostname = hostname;
 });
 
 // Google Analytics Tracking Code

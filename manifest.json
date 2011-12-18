@@ -1,7 +1,8 @@
 ﻿{
-   "version": "1.3.3",
+   "version": "1.4",
    "name": "Notifier Plus for Google Mail™",
    "description": "Notifies you of unread Gmail and Google Apps messages. Preview, star, trash, archive and mark as spam all in one place!",
+
    "background_page": "background.html",
    "browser_action": {
       "default_icon": "assets/img/icon_sets/set1/not_logged_in.png",
@@ -13,6 +14,7 @@
       "js": [ "assets/js/mailto.js" ],
       "matches": [ "http://*/*", "https://*/*" ]
    } ],
+   "content_security_policy": "default-src 'self'; connect-src https://mail.google.com https://accounts.google.com; img-src 'self' http://www.google-analytics.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://ssl.google-analytics.com",
    "icons": {
         "32": "assets/img/icon_32.png",
         "48": "assets/img/icon_48.png",

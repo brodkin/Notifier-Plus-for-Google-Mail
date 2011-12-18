@@ -1,15 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
+	<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/jquery.qtip.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/scrollbar.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="assets/styles/popup.css" />
 	 
 	<script src="assets/js/jquery-1.7.min.js"></script>
+	<script src="assets/js/jquery.qtip.min.js"></script>
 	<script src="assets/js/encoder.js"></script>
 	<script src="assets/js/date.js"></script>
-	<script src="assets/js/template-engine.js"></script>
 	<script src="assets/js/mailaccount.class.js"></script>
 	<script src="assets/js/popup.js"></script>
 	<script src="assets/js/i18n.js"></script>
@@ -17,81 +18,74 @@
 	<title>Notifier Plus for Google Mail&trade; - Popup</title>
 </head>
 <body id="body" class="popup">
-	<!-- Template for an account !-->
-	<script id="AccountTemplate" type="text/html">
-
-	<section id="content_<#= account.id #>" class="account">
-		<div id="inbox_<#= account.id #>" class="vbox">
-			<header>
-				<div class="hbox">
-					<div class="hbox toggleLink">
-						<a accountId="<#= account.id #>" title=""><img src="assets/img/arrow_down.png" /></a>
-					</div>
-					<div class="hbox flex-1 inbox">
-						<div class="hbox flex-1">            
-							<a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" title="<#= account.getInboxLink() #>">
-								<#= account.getInboxLink() #>
-							</a>
+	<!-- Template for an account -->
+	<div id="account" class="template">
+		<section class="account">
+			<div class="vbox container_mail">
+				<header>
+					<div class="hbox">
+						<div class="hbox toggleLink">
+							<a><img src="assets/img/arrow_down.png" /></a>
 						</div>
-						<div class="hbox actions">
-							<# if(account.unreadCount > 0) { #>
-								<span class="unreadCount"><#= account.unreadCount #></span>
-							<# } #>
-							<a class="composeLink" accountId="<#= account.id #>" title="<#= i18n.get('composeLinkTitle') #>"><span class="sprite white message"></span></a>
-							<a class="sendpageLink" accountId="<#= account.id #>" title="<#= i18n.get('sendPageLinkTitle') #>"><span class="sprite white send"></span></a>
+						<div class="hbox flex-1 inbox">
+							<div class="hbox flex-1">            
+								<a class="inboxLink">Unknown Inbox</a>
+							</div>
+							<div class="hbox actions">
+								<span class="unreadCount"></span>
+								<a class="composeLink"><span class="sprite white message"></span></a>
+								<a class="sendpageLink"><span class="sprite white send"></span></a>
+							</div>
 						</div>
 					</div>
-				</div>
-			</header>
-		</div>
-	</section>
-
-	</script>
+				</header>
+			</div>
+		</section>
+	</div>
 	 
-	<!-- Template for a mail !-->
-	<script id="MailTemplate" type="text/html">
-
-	<section class="vbox mail" id="<#= mail.id #>"> 
-		
-		<div class="hbox line1">
-			<div class="hbox">
-				<a class="starLink" mailId="<#= mail.id #>" title="<#= i18n.get('starLinkTitle') #>"><span class="sprite star"></span></a>
-			</div>
-			<div class="hbox flex-1 arg">
-				<a class="openLink trim" mailId="<#= mail.id #>" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
-			</div>
-			<div class="hbox actions arg">
-				<a class="button replyLink" mailId="<#= mail.id #>" title="<#= i18n.get('replyLinkTitle') #>"><span class="sprite reply"></span></a>
-				<a class="button archiveLink" mailId="<#= mail.id #>" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
-				<a class="button deleteLink" mailId="<#= mail.id #>" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
-				<a class="button spamLink" mailId="<#= mail.id #>" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
-				<a class="button labelLink" mailId="<#= mail.id #>" title="<#= i18n.get('showLabelsTitle') #>"><span class="sprite label"></span></a>
-			</div>
-		</div>
-
-		<div class="hbox line2">
-			<div class="hbox flex-1">
-				<a class="importanceLink" mailId="<#= mail.id #>" title="<#= i18n.get('importanceLinkTitle') #>"><span class="sprite importance"></span></a>
-				<span class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></span>
+	<!-- Template for a mail -->
+	<div id="mail" class="template">
+		<section class="vbox mail"> 
+			
+			<div class="hbox line1">
+				<div class="hbox">
+					<a class="starLink"><span class="sprite star"></span></a>
+				</div>
+				<div class="hbox flex-1 arg">
+					<a class="openLink trim">
+						<span class="gradient"></span>
+					</a>
+				</div>
+				<div class="hbox actions arg">
+					<a class="button replyLink"><span class="sprite reply"></span></a>
+					<a class="button archiveLink"><span class="sprite archive"></span></a>
+					<a class="button deleteLink"><span class="sprite trash"></span></a>
+					<a class="button spamLink"><span class="sprite spam"></span></a>
+					<a class="button labelLink"><span class="sprite label"></span></a>
+				</div>
 			</div>
 
-			<div class="hbox">
-				<span title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></span>
+			<div class="hbox line2">
+				<div class="hbox flex-1">
+					<a class="importanceLink"><span class="sprite importance"></span></a>
+					<span class="author"></span>
+				</div>
+				<div class="hbox">
+					<dt></dt>
+				</div>
+			</div>  
+
+			<div class="hbox mailLabels"></div>
+
+			<div class="vbox summary">
+				<div class="trim">
+					<span class="gradient"></span>
+				</div>
 			</div>
-		</div>  
 
-		<div class="hbox mailLabels" id="labelBox_<#= mail.id #>" mailId="<#= mail.id #>"></div>
-
-		<div class="vbox summary" mailId="<#= mail.id #>">
-			<div class="trim">
-				<span class="gradient"></span>
-				<#= mail.summary #>
-			</div>
-		</div>
-
-		<div class="overlay loading" id="loadingBox_<#= mail.id #>"></div>
-	</section>
-	</script>
+			<div class="overlay loading"></div>
+		</section>
+	</div>
 	 
 	 <div id="fullscreenContainer">
 		  <div id="fullscreenControls" class="vbox">
@@ -152,8 +146,8 @@
 			<span>Notifier Plus for Google Mail&trade;</span>
 		 </div>
 		 <div id="menu">
-			  <a href="javascript:refreshMail()" id="refresh" title="Refresh Messages"><span class="sprite refresh"></span></a> 
-			  <a href="javascript:openOptions()" id="options" title="Extension Settings"><span class="sprite gear"></span></a> 
+			  <a id="refresh"><span class="sprite refresh"></span></a> 
+			  <a id="options"><span class="sprite gear"></span></a> 
 		 </div>
 		 <div class="clearfix"></div>
 	</section>

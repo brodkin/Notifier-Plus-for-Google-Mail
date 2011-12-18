@@ -12,30 +12,30 @@ $(document).ready(function () {
    var fullDateTime = mail.issued.toLocaleString();
    var datetime = formatDateTime(mail.issued, i18n.selected_lang.months);
 
-   var mailHtml = parseTemplate($("#MailTemplate").html(), {
-      account: mailAccount,
-      mail: mail,
-      i18n: i18n
+   var sectionMail = $('section.mail');
+
+   // Mail Data
+   $(".inboxLink").text(mailAccount.getAddress());
+   sectionMail.find(".openLink").append(mail.title);
+   sectionMail.find(".author").text(mail.authorName);
+   sectionMail.find("dt").text(formatDateTime(mail.issued, i18n.selected_lang.months));
+   sectionMail.find(".summary .trim").append(mail.summary);
+
+   // Mail Event Handlers
+   sectionMail.find(".deleteLink").on('click', function () { 
+      deleteMail(); 
    });
-
-   $('body').append(mailHtml);
-
-   $('body').hover(function () {
-      $(this).find('.hiddenSummaryActions').fadeIn('fast');
-   }, function () {
-      $(this).find('.hiddenSummaryActions').fadeOut('fast');
+   sectionMail.find(".spamLink").on('click', function () { 
+      spamMail(); 
    });
-
-   $('body').find(".readLink").click(function () { readMail(); });
-   $('body').find(".deleteLink").click(function () { deleteMail(); });
-   $('body').find(".spamLink").click(function () { spamMail(); });
-   $('body').find(".archiveLink").click(function () { archiveMail(); });
-   $('body').find(".openLink").click(function () { openMail(); });
-   $('body').find(".inboxLink").click(function () { openInbox(); });
-
-   $('body').find(".starLink").click(function () {
-      $(this).css('opacity', '1');
-      starMail();
+   sectionMail.find(".archiveLink").on('click', function () { 
+      archiveMail(); 
+   });
+   sectionMail.find(".summary").on('click', function () { 
+      openMail();
+   });
+   sectionMail.find(".openLink").on('click', function () { 
+      openMail(); 
    });
 });
 

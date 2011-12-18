@@ -47,9 +47,7 @@ function MailAccount(settingsObj) {
    var errorLives = 5;
    var isStopped = false;
    var requestTimer;
-
-   var GLOBALS = null;
-   var LABELS = null;
+   var labels = {};
 
    this.onUpdate;
    this.onError;
@@ -98,6 +96,28 @@ function MailAccount(settingsObj) {
             importanceXML.find('id').each( function (index, tag) {
                importanceData[index] = $(tag).text();
             });
+         }
+      });
+
+      // Check Labels
+      $.ajax({
+         type: "GET",
+         dataType: "text",
+         url: mailURL + 'h/',
+         async: false,
+         success: function (data) {
+            try {
+               // Extract Labels
+               jQuery.each(data.match(/ac_([a-z\s\d\-_]+)/ig), function (key, value) {
+                  labels[value] = value.substring(3);
+               });
+
+            } catch (e) {
+               console.error("An error occured while parsing Gmail labels: " + e);
+            }
+         },
+         error: function (xhr, status, err) {
+            console.error("An error occured while fetching Gmail labels: " + xhr + " " + text + " " + err);
          }
       });
 
@@ -226,35 +246,6 @@ function MailAccount(settingsObj) {
       }
    }
 
-   function getGLOBALS() {
-      $.ajax({
-         type: "GET",
-         dataType: "text",
-         url: mailURL,
-         timeout: 25000,
-         success: function (data) {
-            try {
-               var startIndex = data.lastIndexOf('var GLOBALS=') + 12;
-               var endIndex = data.lastIndexOf(';GLOBALS[0]');
-               var length = endIndex - startIndex;
-
-               GLOBALS = eval(data.substr(startIndex, length));
-
-               // Parse labels from GLOBALS
-               LABELS = new Array();
-               $.each(GLOBALS[17][1][2], function (i, val) { LABELS.push(val[0]); });
-            } catch (e) {
-               console.error("An error occured while parsing GLOBALS: " + e);
-            }
-         },
-         error: function (xhr, status, err) {
-            console.error("An error occured while fetching GLOBALS: " + xhr + " " + text + " " + err);
-            // Try again in 30 seconds
-            //window.setTimeout(getGLOBALS, 30 * 1000);
-         }
-      });
-   }
-
    // Handles a successful getInboxCount call and schedules a new one
    function handleSuccess(count) {
       logToConsole("success!");
@@ -298,9 +289,6 @@ function MailAccount(settingsObj) {
             getAt();
          }
 
-         if (GLOBALS == null) {
-            getGLOBALS();
-         }
       } catch (e) {
          console.error("exception: " + e);
          handleError();
@@ -791,7 +779,7 @@ function MailAccount(settingsObj) {
    }
 
    this.getLabels = function () {
-      return LABELS;
+      return labels;
    }
 
    // Opens the Compose window with pre-filled data

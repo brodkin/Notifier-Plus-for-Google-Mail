@@ -8,6 +8,26 @@ var allMailArray;
 var scrollbar;
 var unreadCount = 0;
 
+var tooltips = {
+   position: {
+      my: 'top center', 
+      at: 'bottom center',
+      viewport: $(window)
+   },
+   style: {
+      tip: true,
+      classes: 'ui-tooltip-tipsy'
+   }
+};
+
+// Redirect Console Output to BG Window
+window._console = window.console;
+window.console = {
+    log: function(data) {
+        backgroundPage.console.log(data);
+    }
+};
+
 // Google Analytics Tracking Code
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-27460318-2']);
@@ -89,7 +109,7 @@ function sendPage(accountId) {
 }
 
 function showLoading(mailid) {
-   $("#loadingBox_" + mailid).fadeIn(100);
+   $('[data-mail-id="' + mailid + '"] .loading').fadeIn(100);
 }
 
 function hideLoading(mailid) {
@@ -327,9 +347,9 @@ function hideBody() {
 
 // Hides a mail in the mailbox
 function hideMail(accountId, mailid, stayOpen) {
-   var accountElement = $('#inbox_' + accountId);
+   var accountElement = $('[data-account-id="' + accountId + '"]');
 
-   $('#' + mailid).remove();
+   $('[data-mail-id="' + mailid + '"]').remove();
 
    delete allMailMap[mailid];
 
@@ -351,7 +371,7 @@ function hideMail(accountId, mailid, stayOpen) {
          window.close();
 	  }
    } else {
-      if (unreadCount >= 20) {
+      if (parseInt(unreadCount) >= 20) {
          accountElement.find('.unreadCount').text(unreadCount + "+");
       } else {
          accountElement.find('.unreadCount').text(unreadCount);
@@ -385,6 +405,7 @@ function refreshMail() {
 
 function openOptions() {
    chrome.tabs.create({ url: "options.html" });
+   window.close();
 }
 
 function resizeWindow() {
@@ -429,31 +450,39 @@ function renderMail() {
       account.id = i;
       renderAccount(account);
    });
-
-   // Add event handlers
-   $(".inboxLink").on('click', function () { openInbox($(this).attr('accountId')); });
-   $(".composeLink").on('click', function () { composeNew($(this).attr('accountId')); });
-   $(".sendpageLink").on('click', function () { sendPage($(this).attr('accountId')); });
 }
 
 function renderAccount(account) {
-   $('#content_' + account.id).remove();
+   // Remove Existing Entry for Account
+   $('[data-account-id="' + account.id + '"]').remove();
    account.getNewAt();
 
-   // Render account
+   // Load Account Data
    if (account.getMail() != null) {
       account.unreadCount = account.getMail().length;
    }
 
-   var accountHtml = parseTemplate($("#AccountTemplate").html(), {
-      account: account,
-      i18n: i18n
+   // Append Account to Dropdown Menu
+   var sectionAccount = $('#account.template').find('section.account').clone();
+   sectionAccount.attr('data-account-id',account.id);
+   sectionAccount.find('.inboxLink').text(account.getAddress());
+   sectionAccount.find('.unreadCount').text(account.unreadCount);
+   sectionAccount.find('.composeLink').attr('title',i18n.get('composeLinkTitle'));
+   sectionAccount.find('.sendpageLink').attr('title',i18n.get('sendPageLinkTitle'));
+   $("#content").append(sectionAccount);
+
+   // Account Event handlers
+   sectionAccount.find(".inboxLink").on('click', function () { 
+      openInbox(account.id); 
+   });
+   sectionAccount.find(".composeLink").on('click', function () { 
+      composeNew(account.id); 
+   });
+   sectionAccount.find(".sendpageLink").on('click', function () { 
+      sendPage(account.id); 
    });
 
-   // Add to page
-   $(accountHtml).fadeIn("fast").appendTo("#content");
-
-   var inboxElement = $('#inbox_' + account.id);
+   var inboxElement = sectionAccount.find('.container_mail');
    var labels = account.getLabels();
 
    if (account.getMail() != null) {
@@ -463,28 +492,114 @@ function renderAccount(account) {
 
          allMailMap[mail.id] = mail;
          allMailArray.push(mail);
-            
-         // Render mail
-         var mailHtml = parseTemplate($("#MailTemplate").html(), {
-            account: account,
-            mail: mail,
-            i18n: i18n
-         });         
 
-         mailHtml = $(mailHtml);
+         // Render mail
+         var sectionMail = $("#mail.template").find('section.mail').clone();
+         sectionMail.attr('data-mail-id',mail.id);
+         sectionMail.find('.starLink').attr('title',i18n.get('starLinkTitle'));
+         sectionMail.find('.openLink').append(mail.title);
+         sectionMail.find('.replyLink').attr('title',i18n.get('replyLinkTitle'));
+         sectionMail.find('.archiveLink').attr('title',i18n.get('archiveLinkTitle'));
+         sectionMail.find('.deleteLink').attr('title',i18n.get('deleteLink'));
+         sectionMail.find('.spamLink').attr('title',i18n.get('spamLink'));
+         sectionMail.find('.labelLink').attr('title',i18n.get('showLabelsTitle'));
+         sectionMail.find('.importanceLink').attr('title',i18n.get('importanceLinkTitle'));
+         sectionMail.find('.author').attr('title',mail.authorName).text(mail.authorName);
+         sectionMail.find('dt').attr('title',mail.issued).text(formatDateTime(mail.issued, i18n.selected_lang.months));
+         sectionMail.find('.summary .trim').append(mail.summary);
 
          // Starred Thread
-         if (mail.isStarred)
-            mailHtml.find('.starLink .sprite').addClass('active');
+         if (mail.isStarred) {
+            sectionMail.find('.starLink .sprite').addClass('active');
+         }
 
          // Important Thread
-         if (mail.isImportant)
-            mailHtml.find('.importanceLink .sprite').addClass('active');
-
+         if (mail.isImportant) {
+            sectionMail.find('.importanceLink .sprite').addClass('active');
+         }
          // Add to account element
-         mailHtml.fadeIn("fast").appendTo(inboxElement);
+         inboxElement.append(sectionMail);
+
+         // Mail Event Handlers
+         sectionMail.find(".readLink").on('click', function () { 
+            readThread(account.id, mail.id); 
+         });
+         sectionMail.find(".deleteLink").on('click', function () { 
+            deleteThread(account.id, mail.id); 
+         });
+         sectionMail.find(".spamLink").on('click', function () { 
+            spamThread(account.id, mail.id); 
+         });
+         sectionMail.find(".archiveLink").on('click', function () { 
+            archiveThread(account.id, mail.id); 
+         });
+         sectionMail.find(".fullLink").on('click', function () { 
+            getThread(account.id, mail.id); 
+         });
+         sectionMail.find(".summary").on('click', function () { 
+            getThread(account.id, mail.id); 
+         });
+         sectionMail.find(".replyLink").on('click', function () { 
+            replyTo(account.id, mail.id); 
+         });
+         sectionMail.find(".openLink").on('click', function () { 
+            openMail(account.id, mail.id); 
+         });
+         sectionMail.find(".labelLink").on('click',function () { 
+            var labelLink = this;
+            var labelList = $('<ul>');
+            labelList.addClass('labels');
+            labelList.prepend('<li><strong>' + i18n.get('showLabelsTitle') + '</strong></li>');
+
+            $.each(labels, function(index, value) {
+               var labelElement = $('<li>');
+               labelElement.text(value);
+               labelElement.on('click', function () {
+                  applyLabelToThread(account.id, mail.id, value);
+                  $(labelLink).qtip('api').hide();
+               });
+               labelList.append(labelElement);
+            });
+
+            $(this).qtip( $.extend({}, tooltips, { 
+               content: labelList,
+               show: {
+                  ready: true,
+                  event: 'click'
+               },
+               hide: {
+                  event: 'click mouseleave'
+               }
+            }));
+         });
+         sectionMail.find(".starLink").on('click',function () { 
+            sprite_star = $(this).find(".sprite");
+            if (sprite_star.hasClass('active')) {
+               starThread(account.id, mail.id, false, function () {
+                  sprite_star.removeClass('active');
+               });
+            } else {
+               starThread(account.id, mail.id, true, function () {
+                  sprite_star.addClass('active');
+               });
+            }      
+         });
+         sectionMail.find(".importanceLink").on('click',function () { 
+            sprite_importance = $(this).find(".sprite");
+            if (sprite_importance.hasClass('active')) {
+               importanceThread(account.id, mail.id, false, function () {
+                  sprite_importance.removeClass('active');
+               });
+            } else {
+               importanceThread(account.id, mail.id, true, function () {
+                  sprite_importance.addClass('active');
+               });
+            }      
+         });
+         
       });
 
+      // Account Toggle Arrows
       if (account.getMail().length == 0)
          inboxElement.find(".toggleLink").hide();
 
@@ -498,75 +613,6 @@ function renderAccount(account) {
          }
       });
    }
-
-   $.each(inboxElement.find(".mailLabels"), function(_index, _mailLabels) {
-      var labelContainer = $(_mailLabels);
-      var mailId = labelContainer.attr('mailId');
-
-      if(labels != null) {
-         var labelPopout = $('<ul>');
-         labelPopout.addClass('labels');
-
-         $.each(labels, function(_index, _label) {
-            var labelElement = $('<li>');
-
-            labelElement.text(_label);
-            labelElement.attr("title", "Apply label '" + _label + "'");
-
-            labelElement.on('click', function() {
-               $(this).toggleClass("applied");               
-               labelContainer.slideUp(100);
-               applyLabelToThread(account.id, mailId, _label);
-            });
-
-            labelElement.appendTo(labelPopout);
-         });
-
-         labelPopout.appendTo(labelContainer);
-      }
-   });
-
-   // Hook up event handlers
-   inboxElement.find(".readLink").on('click', function () { readThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".deleteLink").on('click', function () { deleteThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".spamLink").on('click', function () { spamThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".archiveLink").on('click', function () { archiveThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".fullLink").on('click', function () { getThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".summary").on('click', function () { getThread(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".replyLink").on('click', function () { replyTo(account.id, $(this).attr('mailId')); });
-   inboxElement.find(".openLink").on('click', function () { openMail(account.id, $(this).attr('mailId')); });
-
-   
-   inboxElement.find(".labelLink").on('click',function () { 
-      var mailId = $(this).attr('mailId');
-      $("#labelBox_" + mailId).slideToggle(100);
-   });
-      
-   inboxElement.find(".starLink").on('click',function () { 
-      sprite_star = $(this).find(".sprite");
-      if (sprite_star.hasClass('active')) {
-         starThread(account.id, $(this).attr('mailId'), false, function () {
-            sprite_star.removeClass('active');
-         });
-      } else {
-         starThread(account.id, $(this).attr('mailId'), true, function () {
-            sprite_star.addClass('active');
-         });
-      }      
-   });
-
-   inboxElement.find(".importanceLink").on('click',function () { 
-      sprite_importance = $(this).find(".sprite");
-      if (sprite_importance.hasClass('active')) {
-         importanceThread(account.id, $(this).attr('mailId'), false, function () {
-            sprite_importance.removeClass('active');
-         });
-      } else {
-         importanceThread(account.id, $(this).attr('mailId'), true, function () {
-            sprite_importance.addClass('active');
-         });
-      }      
-   });
 }
 
 $(document).ready(function () {
@@ -582,7 +628,13 @@ $(document).ready(function () {
 
    renderMail();
 
-   // Should probably use jQuery for this
-   document.getElementById('refresh').setAttribute('title', i18n.get('refreshLinkTitle'));
-   document.getElementById('options').setAttribute('title', i18n.get('optionsLinkTitle'));
+   $('#refresh').attr('title', i18n.get('refreshLinkTitle')).on('click', function () {
+      refreshMail();
+   });
+   $('#options').attr('title', i18n.get('optionsLinkTitle')).on('click', function () {
+      openOptions();
+   });
+
+   // Tooltips
+   $('a[title]').qtip(tooltips);
 });

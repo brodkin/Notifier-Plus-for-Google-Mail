@@ -1,8 +1,12 @@
 /* CSS for Gmail Checker popup.html */
 
 * {
-	font: 0.98em "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+	font: 13px "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
 	outline: none;
+}
+
+strong {
+	font-weight: bold;
 }
 
 .clearfix:after {
@@ -12,6 +16,10 @@
 	content: " ";
 	clear: both;
 	height: 0;
+}
+
+.template {
+	display: none;
 }
 
 html
@@ -189,19 +197,19 @@ section.account header .inbox .inboxLink {
 	display: block;
 }
 
-section.account header .inbox .inboxLink.color-0, section.account header .inbox .inboxLink.color-4, section.account header .inbox .inboxLink.color-8 {
+section.account:nth-child(4n+1) header .inbox .inboxLink {
 	border-top-color: #e03131;
 }
 
-section.account header .inbox .inboxLink.color-1, section.account header .inbox .inboxLink.color-5, section.account header .inbox .inboxLink.color-9 {
+section.account:nth-child(4n+2) header .inbox .inboxLink {
 	border-top-color: #facb0e;
 }
 
-section.account header .inbox .inboxLink.color-2, section.account header .inbox .inboxLink.color-6 {
+section.account:nth-child(4n+3) header .inbox .inboxLink {
 	border-top-color: #2182d8;
 }
 
-section.account header .inbox .inboxLink.color-3, section.account header .inbox .inboxLink.color-7 {
+section.account:nth-child(4n+4) header .inbox .inboxLink {
 	border-top-color: #51b749;
 }
 
@@ -322,6 +330,17 @@ section.mail .loading
    background-repeat: no-repeat;
 }
 
+.ui-tooltip ul.labels {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.ui-tooltip ul.labels li {
+	cursor: pointer;
+	font-size: 11px;
+}
+
 #fullscreenContainer
 {
    position: absolute;
@@ -355,41 +374,6 @@ section.mail .loading
 {
    margin-top: 4px;
    display: block;
-}
-
-section.mail  .mailLabels
-{
-   display: none;
-}
-
-ul.labels 
-{
-   padding: 2px 0 0;
-   margin: 0;
-   list-style-type: none;
-}
-
-ul.labels li
-{
-	display: inline-block;
-	background: #bab7ba;
-	cursor: pointer;
-	color: #444;
-	font-size: 11px;
-	padding: 3px;
-	border: 1px solid #bab7ba;
-}
-
-ul.labels li.applied
-{
-	color: #222;
-	background-color: #e8e6e8;
-}
-
-ul.labels li:hover
-{
-	color: #222;
-	background-color: #e8e6e8;
 }
 
 /* Sprites */

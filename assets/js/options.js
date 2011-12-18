@@ -25,7 +25,10 @@ function checkHash(){
     } else if (window.location.hash != hash) { 
         hash = window.location.hash; 
         processHash(hash); 
-    } t=setTimeout("checkHash()",200); 
+    }
+    setTimeout( function () {
+      checkHash();
+    },200);
 }
 
 function processHash(hash){
@@ -187,7 +190,6 @@ function playNotificationSound() {
    } else {
       source = document.getElementById("sn_audio").value;
    }
-
    try {
       var audioElement = new Audio();
       audioElement.src = "assets/audio/" + source;
@@ -201,8 +203,10 @@ $(function() {
   restore_options();
   checkHash();
 
+  // Add Options Header to All Options Sections
   $('.options_header').prependTo('.options');
 
+  // Activate Uniform and Fire Change Events
   $("select, input:checkbox, input:radio, input:file").uniform().change(function () {
     var selector = $(this);
     Settings.store(selector.attr('name'), selector.val());
@@ -216,11 +220,41 @@ $(function() {
       } else {
          $('#sn_audio_src').hide();
       }
+
+    } else if (selector.attr('name') == 'show_notification' && selector.val() == 'true') {
+      requestUserPermission();
     }
   });
 
+  // Reload Exension to Apply Settings when Options Closed
   $(window).unload(function() {
     backgroundPage.reloadSettings();
+  });
+
+  // Set Version Number in Header
+  $('.extension_version').text(extVersion);
+
+  // Sound Preview Button
+  $('#btn_play_sound').on('click',function () {
+    playNotificationSound();
+  })
+
+  // Set Year in Copyright
+  var date_now = new Date();
+  $('.date_now_year').text(date_now.getFullYear());
+
+  // Settings Restore
+  $('#btn_restore_defaults').on('click', function () {
+    reset_options();
+    window.reload();
+  });
+
+  // Developer Tools
+  $('#btn_dev_reload').on('click', function () {
+    backgroundPage.reloadSettings();
+  });
+  $('#btn_dev_notify').on('click', function () {
+    backgroundPage.notify();
   });
 
 });

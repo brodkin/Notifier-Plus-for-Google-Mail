@@ -27,6 +27,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
    var auth_host = 'accounts.google.com';
    var hostname = tab.url.match(/:\/\/(.[^/]+)/)[1];
 
+   // Trigger Plugin Reload Upon Leaving auth_host
    if (hostname != auth_host && tabHostname == auth_host) {
       reloadSettings();
    }
@@ -53,10 +54,20 @@ reloadSettings();
 
 function startAnimate() {
    if (Settings.read("animate_off") === false) {
+
       stopAnimateLoop();
-      animTimer = setInterval("doAnimate()", animDelay);
-      setTimeout("stopAnimate()", 2000);
-      loopTimer = setTimeout("startAnimate()", 20000);
+
+      animTimer = setInterval(function () {
+         doAnimate();
+      }, animDelay);
+
+      setTimeout(function () {
+         stopAnimate();
+      }, 2000);
+
+      loopTimer = setTimeout(function () {
+         startAnimate();
+      }, 20000);
    }
 }
 
@@ -125,15 +136,15 @@ function init() {
    gfx = document.getElementById('gfx');
 }
 
-function showNotification(title, message, callback) {
-   localStorage.templateTitle = title;
-   localStorage.templateText = message;
-   window.templateCallback = callback;
+function showNotification(title, message) {
 
-   var notification = webkitNotifications.createHTMLNotification(chrome.extension.getURL("template.html"));
+   var notification = webkitNotifications.createNotification(
+     'assets/img/icon_48.png',  // icon
+     title,  // title
+     message  // body text
+   );
+
    notification.onclose = function () {
-      delete localStorage.templateTitle;
-      delete localStorage.templateText;
       window.templateCallback = null;
    };
    notification.show();
@@ -157,10 +168,8 @@ function reloadSettings() {
    if (storedVersion == null || storedVersion != extensionVersion) {
       Settings.store("version", extensionVersion);
 
-      var updateTitle = "New version installed";
-      var updateMessage = "The extension has been updated to the latest version (" + extensionVersion + ")." +
-      "<br />" + "<br />" +
-      "Click here to view what's new!";
+      var updateTitle = "Notifer Plus for Google Mail™";
+      var updateMessage = "Upgrade to version " + extensionVersion + " complete.";
 
       showNotification(updateTitle, updateMessage, function () {
          chrome.tabs.create({ url: "options.html#changelog" });
@@ -182,7 +191,7 @@ function reloadSettings() {
 
    // Detect Accounts from Multiple Sign-in
    $.ajax({
-      url: "https://www.google.com/accounts/AddSession",
+      url: "https://accounts.google.com/AddSession",
       timeout: 10000,
       success: function (data) {
          // Multiple accounts active
@@ -220,7 +229,9 @@ function reloadSettings_complete() {
    setIcon('not_logged_in');
 
    // Start request loop
-   window.setTimeout(startRequest, 0);
+   window.setTimeout(function () {
+      startRequest();
+   }, 0);
 }
 
 // Sets the browser action icon
@@ -239,7 +250,9 @@ function setIcon(iconName) {
 function startRequest() {
    $.each(accounts, function (i, account) {
       if (account != null) {
-         window.setTimeout(account.startScheduler, 500 * i);
+         window.setTimeout(function () {
+            account.startScheduler();
+         }, 500 * i);
       }
    });
 }
@@ -290,9 +303,12 @@ function mailUpdate(_account) {
       var addressHash = $.md5(accountWithNewestMail.getAddress());
 
       if (mailIdHash != localStorage[addressHash + "_newest"]) {
-         setTimeout('playSound()', 0);
-         setTimeout('startAnimate()', 0);
-         setTimeout('notify(accountWithNewestMail)', 0);
+         // Override Browser's Default Delay
+         setTimeout(function () {
+            playSound();
+            startAnimate();
+            notify(accountWithNewestMail);
+         }, 0);
          localStorage[addressHash + "_newest"] = mailIdHash;
       }
    }
@@ -350,3 +366,7 @@ function notify(accountWithNewestMail) {
       }
    }
 }
+
+$(document).ready(function () {
+   init();
+});

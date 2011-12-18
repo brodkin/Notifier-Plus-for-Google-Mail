@@ -5,59 +5,55 @@
    <link rel="stylesheet" type="text/css" media="screen" href="assets/styles/popup.css" />
    <script src="assets/js/date.js"></script>
    <script src="assets/js/jquery-1.7.min.js"></script>
-   <script src="assets/js/template-engine.js"></script>
    <script src="assets/js/mailaccount.class.js"></script>
    <script src="assets/js/notify.js"></script>
    <script src="assets/js/i18n.js"></script>
 </head>
-<body id="body">
-   <!-- Template for a mail !-->
-   <script id="MailTemplate" type="text/html">
-   <section id="content_<#= account.id #>" class="account">
-      <div id="inbox_<#= account.id #>" class="vbox">
+<body>
+   <section class="account">
+      <div class="vbox container_mail">
          <header>
             <div class="hbox">
                <div class="hbox flex-1 inbox">
                   <div class="hbox flex-1">            
-                     <a class="inboxLink color-<#= account.id #>" accountId="<#= account.id #>" title="<#= account.getInboxLink() #>">
-                        <#= account.getInboxLink() #>
-                     </a>
+                     <a class="inboxLink">New Message</a>
                   </div>
                </div>
             </div>
          </header>
-         <section class="vbox mail" id="<#= mail.id #>"> 
+         <section class="vbox mail"> 
             
             <div class="hbox line1">
                <div class="hbox flex-1 arg">
-                  <a class="openLink trim" mailId="<#= mail.id #>" title="<#= mail.title #>"><span class="gradient"></span><#= mail.title #></a>
+                  <a class="openLink trim">
+                     <span class="gradient"></span>
+                  </a>
                </div>
                <div class="hbox actions arg">
-                  <a class="button archiveLink" mailId="<#= mail.id #>" title="<#= i18n.get('archiveLinkTitle') #>"><span class="sprite archive"></span></a>
-                  <a class="button deleteLink" mailId="<#= mail.id #>" title="<#= i18n.get('deleteLink') #>"><span class="sprite trash"></span></a>
-                  <a class="button spamLink" mailId="<#= mail.id #>" title="<#= i18n.get('spamLink') #>"><span class="sprite spam"></span></a>
+                  <a class="button archiveLink"><span class="sprite archive"></span></a>
+                  <a class="button deleteLink"><span class="sprite trash"></span></a>
+                  <a class="button spamLink"><span class="sprite spam"></span></a>
                </div>
             </div>
 
             <div class="hbox line2">
                <div class="hbox flex-1">
-                  <span class="author" title="<#= mail.authorMail  #>"><#= mail.authorName  #></span>
+                  <span class="author"></span>
                </div>
-
                <div class="hbox">
-                  <span title="<#= mail.issued #>"><#= formatDateTime(mail.issued, i18n.selected_lang.months) #></span>
+                  <dt>Date</dt>
                </div>
             </div>  
 
-            <div class="vbox summary" mailId="<#= mail.id #>">
+            <div class="vbox summary">
                <div class="trim">
                   <span class="gradient"></span>
-                  <#= mail.summary #>
                </div>
             </div>
+
+            <div class="overlay loading"></div>
          </section>
       </div>
    </section>
-   </script>
 </body>
 </html>

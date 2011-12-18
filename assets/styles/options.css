@@ -225,7 +225,7 @@ section#main .subfield {
 	border-width: 1px;
 }
 
-section#main #btn-pre-sx {
+section#main #btn_play_sound {
 	top: 6px;
 	position: relative;
 }
@@ -255,6 +255,18 @@ section#main fieldset legend {
 section#main #icon_selection img {
 	position: relative;
 	top: 5px;
+}
+
+section#main #tab_changelog dt {
+	font-size: 80%;
+	color: #bab7ba;
+	margin-top: 3px;
+}
+
+section#main #tab_changelog .major + ul {
+	
+	border-bottom: 1px solid #e8e6e8;
+	padding-bottom: 15px;
 }
 
 footer {
